@@ -2,7 +2,6 @@ package com.arcralius.ff.lwjgl3;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-import com.arcralius.ff.main;
 
 /** Launches the desktop (LWJGL3) application. */
 public class Lwjgl3Launcher {
@@ -11,13 +10,14 @@ public class Lwjgl3Launcher {
         createApplication();
     }
 
+
     private static Lwjgl3Application createApplication() {
-        return new Lwjgl3Application(new main(), getDefaultConfiguration());
+        return new Lwjgl3Application(new GameMaster(), getDefaultConfiguration());
     }
 
     private static Lwjgl3ApplicationConfiguration getDefaultConfiguration() {
         Lwjgl3ApplicationConfiguration configuration = new Lwjgl3ApplicationConfiguration();
-        configuration.setTitle("ff");
+        configuration.setTitle("GameEngine");
         //// Vsync limits the frames per second to what your hardware can display, and helps eliminate
         //// screen tearing. This setting doesn't always work on Linux, so the line after is a safeguard.
         configuration.useVsync(true);
