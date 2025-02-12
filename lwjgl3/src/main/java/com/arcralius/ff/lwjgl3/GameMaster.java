@@ -25,29 +25,19 @@ import java.util.Random; //random numbers
 
 public class GameMaster extends ApplicationAdapter{
 
-    private SpriteBatch batch;
-    private ShapeRenderer shape;
-    private EntityController em;
+    private SceneController sceneController;
 
-    private BaseEntity[] droplets;
-    private BaseEntity bucket;
-    private BaseEntity circle;
-    private BaseEntity triangle;
-    private List<BaseEntity> Entities;
+
+    public GameMaster() {
+        this.sceneController = new SceneController();
+    }
 
 
     @Override
     public void create() {
 
-        shape = new ShapeRenderer();
-        batch = new SpriteBatch();
-
-
-
-
-
-
-
+        sceneController = new SceneController();
+        sceneController.changeScreen(new GameplayScreen()); // Start with GameplayScreen
 
 
 
@@ -57,6 +47,7 @@ public class GameMaster extends ApplicationAdapter{
     public void render() {
         ScreenUtils.clear(0, 0, 0.2f, 1);
 
+        sceneController.render();
 
 
 
