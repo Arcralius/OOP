@@ -30,7 +30,7 @@ public class GameplayScreen extends BaseScreen {
 
     public void create() {
 
-
+ //need to find a way to
 
     }
 
@@ -50,8 +50,8 @@ public class GameplayScreen extends BaseScreen {
 
 
         ScreenUtils.clear(0, 0, 0.2f, 1);
-        super.render();
-        em.draw(batch);
+        super.render(); //background
+        em.draw(batch); //bucket
 
 
 
