@@ -1,6 +1,8 @@
-package com.arcralius.ff.lwjgl3;
+package com.arcralius.ff.lwjgl3.scene;
 
-import com.arcralius.ff.lwjgl3.GameplayScreen;
+//import com.arcralius.ff.lwjgl3.GameplayScreen;
+import com.arcralius.ff.lwjgl3.BaseScreen;
+//import com.arcralius.ff.lwjgl3.SceneController;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -16,7 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.ScreenUtils;
 
-public class MainMenu extends BaseScreen {
+public class MainMenuScreen extends BaseScreen {
     private Stage stage;
     private TextureAtlas atlas;
     private Skin skin;
@@ -27,7 +29,7 @@ public class MainMenu extends BaseScreen {
     private Sprite backgroundSprite1, backgroundSprite2;
     private float backgroundX1 = 0, backgroundX2;
 
-    public MainMenu(SceneController sceneController) {
+    public MainMenuScreen(SceneController sceneController) {
         this.sceneController = sceneController;
     }
 
@@ -38,7 +40,7 @@ public class MainMenu extends BaseScreen {
         Gdx.input.setInputProcessor(stage);
 
         // Load the background texture
-        backgroundTexture = new Texture(Gdx.files.internal("ui/menuBackground.png"));
+        backgroundTexture = new Texture(Gdx.files.internal("menuBackground.png"));
 
         // Initialize background sprites for scrolling
         backgroundSprite1 = new Sprite(backgroundTexture);
@@ -54,13 +56,13 @@ public class MainMenu extends BaseScreen {
     }
 
     private void setupUI() {
-        atlas = new TextureAtlas(Gdx.files.internal("ui/button.atlas"));
+        atlas = new TextureAtlas(Gdx.files.internal("button.atlas"));
         skin = new Skin(atlas);
 
         Table table = new Table();
         table.setFillParent(true); // Properly centers elements
 
-        BitmapFont whiteFont = new BitmapFont(Gdx.files.internal("font/white.fnt"), false); // ✅ Now a local variable
+        BitmapFont whiteFont = new BitmapFont(Gdx.files.internal("white.fnt"), false); // ✅ Now a local variable
 
         // Define button style with hover effect
         TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
@@ -101,7 +103,7 @@ public class MainMenu extends BaseScreen {
 
     @Override
     protected void update(float delta) {
-        stage.act(delta); // ✅ Fixes missing method error
+        stage.act(delta);
     }
 
     @Override
