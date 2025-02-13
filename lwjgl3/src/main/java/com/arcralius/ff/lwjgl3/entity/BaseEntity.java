@@ -4,32 +4,28 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 
-public  class BaseEntity {
+public class BaseEntity {
     protected Texture textureObject;
 
     protected float x,y;
-    protected float speed;
+    protected float speed, width, height;
     protected String id;
+    private Rectangle boundary;
 
 
 
 
-    //default values
-    public BaseEntity() {
-        this.x = 0;
-        this.y = 0;
-        this.speed = 0;
-    }
-
-
-
-    public BaseEntity(String texturePath, float x, float y, String id, float speed) {
+    public BaseEntity(String texturePath, float x, float y, String id, float speed, float width, float height) {
     	this.textureObject = new Texture(texturePath);
+        this.width = width;
+        this.height = height;
         this.x = x;
         this.y = y;
         this.id = id;
         this.speed = speed;
+        this.boundary = new Rectangle(x,y,width,height);
 
     }
 
@@ -43,13 +39,15 @@ public  class BaseEntity {
 
     }
 
-    public void handleMovement() {
-        // Default movement logic, override in subclasses if needed
+    public Rectangle getboundary(){
+        return boundary;
     }
 
 
 
-    // x setters and getters
+    public void handleMovement() {
+        // Default movement logic, override in subclasses if needed
+    }
 
     public Texture getTextureObject(){
         return textureObject;

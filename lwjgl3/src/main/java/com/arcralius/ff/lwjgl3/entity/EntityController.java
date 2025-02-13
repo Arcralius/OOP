@@ -17,8 +17,6 @@ public class EntityController {
 
 
 
-
-
     public void addEntity(BaseEntity entity) {
         entityList.add(entity);
 
