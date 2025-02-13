@@ -1,7 +1,8 @@
 package com.arcralius.ff.lwjgl3.scene;
 
+import com.arcralius.ff.lwjgl3.entity.PlayableEntity;
 import com.badlogic.gdx.Gdx;
-import com.arcralius.ff.lwjgl3.BaseScreen;
+import com.arcralius.ff.lwjgl3.scene.BaseScreen;
 import com.arcralius.ff.lwjgl3.movement.MovementController;
 import com.arcralius.ff.lwjgl3.scene.SceneController;
 import com.badlogic.gdx.Input;
@@ -20,6 +21,8 @@ public class GameplayScreen extends BaseScreen {
     private final Texture backgroundTexture;
     private final Sprite backgroundSprite;
     private final MovementController movementController;
+    private PlayableEntity playableEntity;
+
 
     public GameplayScreen(SceneController sceneController, MovementController movementController) {
         super();
@@ -33,11 +36,12 @@ public class GameplayScreen extends BaseScreen {
         this.backgroundSprite = new Sprite(backgroundTexture);
         backgroundSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.position.set(bucketSprite.getX(), bucketSprite.getY(), 0);
+        playableEntity = new PlayableEntity("E:/ff/assets/bucket.png", 100, 100, "player", 50);
     }
 
     @Override
     protected void update(float delta) {
-        movementController.handleMovement(delta);
+        movementController.handleMovement(playableEntity, delta);
         camera.update();
     }
 

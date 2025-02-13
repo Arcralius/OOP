@@ -1,7 +1,7 @@
 package com.arcralius.ff.lwjgl3.scene;
 
 //import com.arcralius.ff.lwjgl3.GameplayScreen;
-import com.arcralius.ff.lwjgl3.BaseScreen;
+import com.arcralius.ff.lwjgl3.scene.BaseScreen;
 import com.arcralius.ff.lwjgl3.entity.PlayableEntity;
 import com.arcralius.ff.lwjgl3.movement.MovementController;
 import com.arcralius.ff.lwjgl3.scene.SceneController;
@@ -65,7 +65,7 @@ public class MainMenuScreen extends BaseScreen {
         Table table = new Table();
         table.setFillParent(true); // Properly centers elements
 
-        BitmapFont whiteFont = new BitmapFont(Gdx.files.internal("white.fnt"), false); // ✅ Now a local variable
+        BitmapFont whiteFont = new BitmapFont(Gdx.files.internal("white.fnt"), false); 
 
         // Define button style with hover effect
         TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();

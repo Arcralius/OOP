@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 
-public class EndScreen extends com.arcralius.ff.lwjgl3.BaseScreen {
+public class EndScreen extends com.arcralius.ff.lwjgl3.scene.BaseScreen {
     private final SceneController sceneController;
     private final Texture background; // Set to final since it's initialized once
     private final BitmapFont font;
