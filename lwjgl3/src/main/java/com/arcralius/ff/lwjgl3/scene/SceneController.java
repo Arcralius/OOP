@@ -1,46 +1,24 @@
-package com.arcralius.ff.lwjgl3.scene;
+package com.arcralius.ff.lwjgl3;
 
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Screen;
 
 public class SceneController {
-    private BaseScreen baseScreen;
+    private final Game game;
 
-    public SceneController() {
-        this.baseScreen = null;
+    public SceneController(Game game) {
+        this.game = game; //assign to game field to control screen changes in the game
     }
 
-
-    public void changeScreen(BaseScreen newScreen) {
-        this.baseScreen = newScreen;
-        System.out.println("Switched to: " + newScreen.getClass().getSimpleName());
-    }
-
-    public void create() {
-        if (baseScreen != null) {
-            baseScreen.changeScreen(baseScreen);
-        }
-    }
-
-    public void render() {
-        ScreenUtils.clear(0, 0, 0.2f, 1);
-        if (baseScreen != null) {
-            System.out.println("Rendering: " + baseScreen.getClass().getSimpleName());
-
-
-            baseScreen.render(); // Call render on the active screen
-        }
-    }
-
-    public void dispose() {
-        System.out.println("Disposing current screen...");
-
-    }
-
-    // Example of SceneController interacting with BaseScreen
-    public void updateBackground(Texture newTexture) {
-
+    //define method to change the current screen in the game
+    public void changeScreen(Screen screen) {
+        if (game.getScreen() != null) {
+            System.out.println("Disposing current screen: " + game.getScreen().getClass().getSimpleName()); //retrieve class name of current screen
+            game.getScreen().dispose();
         }
 
+    //switch to new screen
+        System.out.println("Switching to new screen: " + screen.getClass().getSimpleName()); //logs the new screen name
+        game.setScreen(screen);
+    }
 }
-
