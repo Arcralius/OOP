@@ -1,7 +1,7 @@
 package com.arcralius.ff.lwjgl3.scene;
 
 //import com.arcralius.ff.lwjgl3.GameplayScreen;
-import com.arcralius.ff.lwjgl3.BaseScreen;
+import com.arcralius.ff.lwjgl3.scene.BaseScreen;
 import com.arcralius.ff.lwjgl3.entity.PlayableEntity;
 import com.arcralius.ff.lwjgl3.movement.MovementController;
 import com.arcralius.ff.lwjgl3.scene.SceneController;

@@ -16,7 +16,8 @@ public class MovementController {
         this.camera = camera;
     }
 
-    public void handleMovement(float delta) {
+    public void handleMovement(PlayableEntity player, float delta) {
+
         float newX = player.getX();
         float newY = player.getY();
 

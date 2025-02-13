@@ -1,6 +1,6 @@
 package com.arcralius.ff.lwjgl3.scene;
 
-import com.arcralius.ff.lwjgl3.BaseScreen;
+import com.arcralius.ff.lwjgl3.scene.BaseScreen;
 import com.arcralius.ff.lwjgl3.movement.MovementController;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
