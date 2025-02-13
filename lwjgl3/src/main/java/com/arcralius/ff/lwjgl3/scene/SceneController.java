@@ -1,4 +1,4 @@
-package com.arcralius.ff.lwjgl3;
+package com.arcralius.ff.lwjgl3.scene;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
@@ -20,5 +20,15 @@ public class SceneController {
     //switch to new screen
         System.out.println("Switching to new screen: " + screen.getClass().getSimpleName()); //logs the new screen name
         game.setScreen(screen);
+    }
+
+    public void render() {
+    }
+
+    public void dispose() {
+
+    }
+
+    public void resize(int width, int height) {
     }
 }
