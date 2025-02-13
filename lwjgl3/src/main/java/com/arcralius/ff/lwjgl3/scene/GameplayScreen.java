@@ -1,65 +1,62 @@
-package com.arcralius.ff.lwjgl3.scene;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.ScreenUtils;
-import com.arcralius.ff.lwjgl3.entity.*
-;
+package com.arcralius.ff.lwjgl3;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
 public class GameplayScreen extends BaseScreen {
-    private List<BaseEntity> Entities;
-    private EntityController em;
-    private BaseEntity bucket;
-    private Texture texture;   // Declare the Texture (Sprite)
-    private SpriteBatch batch; // Declare the SpriteBatch
-	private BaseEntity player;
+    private final TiledMap map;
+    private final OrthogonalTiledMapRenderer mapRenderer;
+    private final Sprite bucketSprite;
+    private final Texture bucketTexture;
+    private final MovementController movementController;
 
+    public GameplayScreen(SceneController sceneController) {
+        // Load the tile map
+        this.map = new TmxMapLoader().load("ui/background.tmx");
 
+        //Ensure `batch` is initialized before using `mapRenderer`
+        this.mapRenderer = new OrthogonalTiledMapRenderer(map, batch);
 
-    public GameplayScreen() {
-        super();
-        this.background = new Texture("gameplay_background.png"); // Load background texture
-        this.menuOptions = Arrays.asList("Resume", "Settings", "Exit");
+        // Retrieve the collision layer from the map
+        TiledMapTileLayer collisionLayer = (TiledMapTileLayer) map.getLayers().get("collisions");
+
+        // Load the player sprite
+        this.bucketTexture = new Texture("ui/bucket.png");
+        this.bucketSprite = new Sprite(bucketTexture);
+        this.bucketSprite.setSize(16, 16);
+
+        // Initialize the movement controller
+        this.movementController = new MovementController(bucketSprite, camera, collisionLayer);
+
+        // Center the camera on the player
+        camera.position.set(bucketSprite.getX(), bucketSprite.getY(), 0);
     }
-
-
-
-
-    public void create() {
-
- //need to find a way to
-
-    }
-
-
 
     @Override
-    public void render() {
-    	batch = new SpriteBatch();
+    protected void update(float delta) {
+        movementController.handleMovement(delta);
+        camera.update();
+    }
 
-        Entities = new ArrayList<>();
+    @Override
+    protected void draw() {
+        mapRenderer.setView(camera);
+        mapRenderer.render();
 
-        bucket = new PlayableEntity("bucket.png", 0,0,"hello",0);
-
-        Entities.add(bucket);
-
-        em = new EntityController(Entities);
-
-
-        ScreenUtils.clear(0, 0, 0.2f, 1);
-        super.render(); //background
-        em.draw(batch); //bucket
-
-
-
+        //start batch for sprites
+        batch.begin();
+        bucketSprite.draw(batch);
+        batch.end();
     }
 
     @Override
     public void dispose() {
         super.dispose();
+        map.dispose();
+        bucketTexture.dispose(); //Properly dispose of texture to prevent memory leaks
     }
 }
-
