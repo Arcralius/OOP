@@ -1,6 +1,7 @@
 package com.arcralius.ff.lwjgl3.scene;
 
 import com.arcralius.ff.lwjgl3.BaseScreen;
+import com.arcralius.ff.lwjgl3.movement.MovementController;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -85,7 +86,7 @@ public class PauseScreen extends BaseScreen {
         buttonRestart.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                sceneController.changeScreen(new GameplayScreen(sceneController)); // Restart game
+                sceneController.changeScreen(new GameplayScreen(sceneController, new MovementController(null, camera)));
             }
         });
 
