@@ -65,7 +65,7 @@ public  class BaseEntity {
         return x;
     }
 
-    void setX(float newX) {
+    public void setX(float newX) {
         x = newX;
     }
 
@@ -76,7 +76,7 @@ public  class BaseEntity {
         return y;
     }
 
-    void setY(float newY) {
+    public void setY(float newY) {
         y = newY;
     }
 
