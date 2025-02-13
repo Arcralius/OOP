@@ -34,8 +34,6 @@ public class MovementController {
             newY -= SPEED * delta;
         }
 
-
-        // ✅ Camera follows updated player position
         camera.position.set(player.getX(), player.getY(), 0);
         camera.update();
     }
