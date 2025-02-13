@@ -1,4 +1,4 @@
-package com.arcralius.ff.lwjgl3;
+package com.arcralius.ff.lwjgl3.scene;
 
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
