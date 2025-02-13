@@ -1,40 +1,40 @@
-package com.arcralius.ff.lwjgl3.scene;
+package com.arcralius.ff.lwjgl3;
 
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
-import java.util.ArrayList;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import java.util.List;
 
-import java.util.List;
-
-public abstract class BaseScreen {
-    protected Texture background;
-    protected List<String> menuOptions;
-    protected int selectedOption;
+//abstract class used as base screen cannot be instantiated directly, it will be extended
+public abstract class BaseScreen implements Screen {
+    // 🔹 Private attributes for encapsulation
+    private Texture background; //store screen bg image
+    private List<String> menuOptions; //store the list of menu options
+    private int selectedOption; //track which menu option is selected
+    private float deltaTime;
+    protected OrthographicCamera camera;
+    protected Viewport viewport;
     protected SpriteBatch batch;
 
- public BaseScreen(){
-     this.batch = new SpriteBatch();
- }
-
-    public void render() {
-        if (background != null) {
-            batch.begin();
-            batch.draw(background, 0, 0); // Draw texture at (0,0) full screen
-            batch.end();
-        }
+    public BaseScreen() {
+        camera = new OrthographicCamera();
+        viewport = new FitViewport(800, 600, camera);
+        batch = new SpriteBatch();
     }
 
-    public void dispose(){
-        batch.dispose();
+    public OrthographicCamera getCamera() {
+        return camera;
+    }
+
+    public Viewport getViewport() {
+        return viewport;
     }
 
 
-    public void changeScreen(BaseScreen Newscreen) {
-
-    }
-
+    // 🔹 Getters and Setters (Encapsulated Fields)
     public Texture getBackground() {
         return background;
     }
@@ -57,5 +57,60 @@ public abstract class BaseScreen {
 
     public void setSelectedOption(int selectedOption) {
         this.selectedOption = selectedOption;
+    }
+
+    public float getDeltaTime() {
+        return deltaTime;
+    }
+
+    //render the screen
+    protected abstract void update(float delta);
+    protected abstract void draw();
+
+    @Override
+    public void render(float delta) {
+        this.deltaTime = delta;
+        update(delta); //update game logic before rendering
+        camera.update();
+
+        batch.setProjectionMatrix(camera.combined);
+        draw(); //each subclass will define what to draw
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        viewport.update(width, height);
+        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
+        camera.update();
+    }
+
+    @Override
+    public void dispose() {
+        if (batch != null) batch.dispose();
+        if (background != null) background.dispose();
+    }
+
+    //to load assets when screen appears
+    @Override
+    public void show() {
+
+    }
+
+    //to pause game state
+    @Override
+    public void pause() {
+
+    }
+
+    //to continue from where player left off
+    @Override
+    public void resume() {
+
+    }
+
+    //to clean up when switching screens
+    @Override
+    public void hide() {
+
     }
 }
