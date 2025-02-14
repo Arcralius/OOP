@@ -65,7 +65,7 @@ public class MainMenuScreen extends BaseScreen {
         Table table = new Table();
         table.setFillParent(true); // Properly centers elements
 
-        BitmapFont whiteFont = new BitmapFont(Gdx.files.internal("white.fnt"), false); 
+        BitmapFont whiteFont = new BitmapFont(Gdx.files.internal("white.fnt"), false);
 
         // Define button style with hover effect
         TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
@@ -79,7 +79,7 @@ public class MainMenuScreen extends BaseScreen {
         buttonPlay.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                sceneController.changeScreen(new GameplayScreen(sceneController, new MovementController(null, camera)));
+                sceneController.changeScreen(new GameplayScreen(sceneController, new MovementController(camera)));
             }
         });
 

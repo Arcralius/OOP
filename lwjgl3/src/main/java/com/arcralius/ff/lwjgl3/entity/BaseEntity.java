@@ -1,99 +1,85 @@
 package com.arcralius.ff.lwjgl3.entity;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
-import com.arcralius.ff.lwjgl3.movement.*;
 
 public abstract class BaseEntity {
     protected Texture textureObject;
-
-    private float x,y;
+    protected Sprite sprite; // Add sprite as a field
+    private float x, y;
     private float speed, width, height;
     private String id;
     private Rectangle boundary;
 
-
-
-
+    // Constructor to initialize the entity
     public BaseEntity(String texturePath, float x, float y, String id, float speed, float width, float height) {
-    	this.textureObject = new Texture(texturePath);
+        this.textureObject = new Texture(texturePath);
+        this.sprite = new Sprite(textureObject); // Initialize sprite with the texture
+        this.sprite.setSize(width, height); // Set sprite size
+        this.sprite.setPosition(x, y); // Set initial position
+
         this.width = width;
         this.height = height;
         this.x = x;
         this.y = y;
         this.id = id;
         this.speed = speed;
-        this.boundary = new Rectangle(x,y,width,height);
-
+        this.boundary = new Rectangle(x, y, width, height); // Initialize the boundary
     }
 
-
+    // Draw the sprite (visual representation)
     public void draw(SpriteBatch batch) {
-        if (textureObject != null) {
+        if (sprite != null) {
             batch.begin();
-            batch.draw(textureObject, x, y);
+            sprite.draw(batch); // Draw the sprite
             batch.end();
         }
-
     }
 
-    public Rectangle getboundary(){
+    // Getter for boundary
+    public Rectangle getBoundary() {
         return boundary;
     }
 
-
-    public abstract void handleMovement();
-
-
-
-
-    public Texture getTextureObject(){
+    // Getter for the texture object
+    public Texture getTextureObject() {
         return textureObject;
     }
 
-
-
-
-
-
-    public float getX()
-    {
+    // Getter and setter for position and other properties
+    public float getX() {
         return x;
     }
 
     public void setX(float newX) {
         x = newX;
+        sprite.setX(newX); // Update sprite position
+        boundary.setX(newX); // Update boundary position
     }
 
-    // y setters and getters
-
-    public float getY()
-    {
+    public float getY() {
         return y;
     }
 
     public void setY(float newY) {
         y = newY;
+        sprite.setY(newY); // Update sprite position
+        boundary.setY(newY); // Update boundary position
     }
 
-    // setters and getters for speed
-    public float getSpeed()
-    {
+    // Setter and getter for speed
+    public float getSpeed() {
         return speed;
     }
 
-    void setSpeed(float NewSpeed) {
-        speed = NewSpeed;
+    void setSpeed(float newSpeed) {
+        speed = newSpeed;
     }
 
-
-
-
-
-
+    // Dispose of resources (dispose texture)
+    public void dispose() {
+        textureObject.dispose(); // Dispose of the texture
+    }
 }
-
-

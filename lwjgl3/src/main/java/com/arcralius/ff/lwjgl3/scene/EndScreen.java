@@ -43,7 +43,7 @@ public class EndScreen extends com.arcralius.ff.lwjgl3.scene.BaseScreen {
 
     private void handleInput() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
-            sceneController.changeScreen(new GameplayScreen(sceneController, new MovementController(null, camera)));
+            sceneController.changeScreen(new GameplayScreen(sceneController, new MovementController(camera)));
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             Gdx.app.exit();
