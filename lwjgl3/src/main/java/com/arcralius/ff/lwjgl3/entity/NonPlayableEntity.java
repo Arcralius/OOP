@@ -12,6 +12,6 @@ public class NonPlayableEntity extends BaseEntity{
     @Override
     public void handleMovement() {
         // Example movement logic (override as needed)
-        x += speed;
+
     }
 }

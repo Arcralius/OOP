@@ -38,17 +38,19 @@ public class GameplayScreen extends BaseScreen {
         this.backgroundSprite = new Sprite(backgroundTexture);
         backgroundSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.position.set(bucketSprite.getX(), bucketSprite.getY(), 0);
-        playableEntity = new PlayableEntity("bucket.png", 100, 100, "player", 50, 100, 100);
+        playableEntity = new PlayableEntity("bucket.png", 100, 100, "player", 1000, 100, 100);
     }
 
     @Override
     protected void update(float delta) {
-        movementController.handleMovement(playableEntity, delta);
-        camera.update();
+        playableEntity.handleMovement();
+        //movementController.handleMovement(playableEntity, delta);
+        //camera.update();
     }
 
     @Override
     protected void draw() {
+
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         backgroundSprite.draw(batch);

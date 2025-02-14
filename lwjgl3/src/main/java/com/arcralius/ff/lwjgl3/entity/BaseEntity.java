@@ -5,13 +5,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.arcralius.ff.lwjgl3.movement.*;
 
-public class BaseEntity {
+public abstract class BaseEntity {
     protected Texture textureObject;
 
-    protected float x,y;
-    protected float speed, width, height;
-    protected String id;
+    private float x,y;
+    private float speed, width, height;
+    private String id;
     private Rectangle boundary;
 
 
@@ -44,10 +45,10 @@ public class BaseEntity {
     }
 
 
+    public abstract void handleMovement();
 
-    public void handleMovement() {
-        // Default movement logic, override in subclasses if needed
-    }
+
+
 
     public Texture getTextureObject(){
         return textureObject;
