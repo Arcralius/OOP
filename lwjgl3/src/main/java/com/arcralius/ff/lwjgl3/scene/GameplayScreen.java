@@ -29,14 +29,16 @@ public class GameplayScreen extends BaseScreen {
         this.movementController = movementController;
         this.map = new TmxMapLoader().load("background.tmx");
         this.mapRenderer = new OrthogonalTiledMapRenderer(map, batch);
-        this.bucketTexture = new Texture("bucket.png");
+        this.bucketTexture = new Texture("bucket.png" +
+            "" +
+            "");
         this.bucketSprite = new Sprite(bucketTexture);
         this.bucketSprite.setSize(16, 16);
         this.backgroundTexture = new Texture("plains.png");
         this.backgroundSprite = new Sprite(backgroundTexture);
         backgroundSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.position.set(bucketSprite.getX(), bucketSprite.getY(), 0);
-        playableEntity = new PlayableEntity("E:/ff/assets/bucket.png", 100, 100, "player", 50);
+        playableEntity = new PlayableEntity("bucket.png", 100, 100, "player", 50, 100, 100);
     }
 
     @Override

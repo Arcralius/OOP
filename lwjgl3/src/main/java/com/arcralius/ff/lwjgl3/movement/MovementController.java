@@ -1,7 +1,7 @@
 package com.arcralius.ff.lwjgl3.movement;
 
 import com.arcralius.ff.lwjgl3.entity.PlayableEntity;
-import com.arcralius.ff.lwjgl3.collision.CollisionController; // Import CollisionController
+// import com.arcralius.ff.lwjgl3.collision.CollisionController; // Import CollisionController
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
