@@ -89,7 +89,6 @@ public class SettingScreen extends BaseScreen {
         TextButton buttonBack = new TextButton("Back to Main Menu", textButtonStyle);
         buttonBack.pad(20, 50, 20, 50);
         buttonBack.addListener(new ClickListener() {
-            @Override
             public void clicked(InputEvent event, float x, float y) {
                 sceneController.changeScreen(new MainMenuScreen(sceneController));
             }
