@@ -79,7 +79,15 @@ public class MainMenuScreen extends BaseScreen {
         buttonPlay.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                sceneController.changeScreen(new GameplayScreen(sceneController, new MovementController(camera)));
+                sceneController.changeScreen(new GameplayScreen(sceneController, new MovementController(camera)));            }
+        });
+
+        // Create Settings Button
+        TextButton buttonSettings = new TextButton("Settings", textButtonStyle);
+        buttonSettings.pad(20, 50, 20, 50);
+        buttonSettings.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                sceneController.changeScreen(new SettingScreen(sceneController));
             }
         });
 
@@ -97,7 +105,10 @@ public class MainMenuScreen extends BaseScreen {
         table.row().pad(20);
         table.add(buttonPlay).fillX().uniformX();
         table.row().pad(20);
+        table.add(buttonSettings).fillX().uniformX();
+        table.row().pad(20);
         table.add(buttonQuit).fillX().uniformX();
+
 
 
 
