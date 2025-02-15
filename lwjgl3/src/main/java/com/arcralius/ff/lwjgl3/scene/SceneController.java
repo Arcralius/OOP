@@ -14,7 +14,7 @@ public class SceneController {
     public void changeScreen(Screen screen) {
         if (game.getScreen() != null) {
             System.out.println("Disposing current screen: " + game.getScreen().getClass().getSimpleName()); //retrieve class name of current screen
-            game.getScreen().dispose();
+//            game.getScreen().dispose();
         }
 
     //switch to new screen
