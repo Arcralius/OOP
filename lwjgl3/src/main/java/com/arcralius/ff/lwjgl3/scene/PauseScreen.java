@@ -1,7 +1,5 @@
 package com.arcralius.ff.lwjgl3.scene;
 
-import com.arcralius.ff.lwjgl3.scene.BaseScreen;
-import com.arcralius.ff.lwjgl3.movement.MovementController;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -21,37 +19,25 @@ public class PauseScreen extends BaseScreen {
     private TextureAtlas atlas;
     private Skin skin;
     private final SceneController sceneController;
-    private final GameplayScreen gameplayScreen; // Store reference to the current game state
+    private final GameplayScreen gameplayScreen;
 
-    // Background texture
     private Texture backgroundTexture;
-    private Sprite backgroundSprite1, backgroundSprite2;
-    private float backgroundX1 = 0, backgroundX2;
+    private Sprite backgroundSprite;
 
     public PauseScreen(SceneController sceneController, GameplayScreen gameplayScreen) {
         this.sceneController = sceneController;
-        this.gameplayScreen = gameplayScreen; // Store the gameplay screen reference
+        this.gameplayScreen = gameplayScreen;
     }
 
     @Override
     public void show() {
-        // Initialize UI handling
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
-        // Load the background texture
-        backgroundTexture = new Texture(Gdx.files.internal("menubackground.png"));
+        backgroundTexture = new Texture(Gdx.files.internal("gameplay_background.png"));
+        backgroundSprite = new Sprite(backgroundTexture);
+        backgroundSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        // Initialize background sprites for scrolling effect
-        backgroundSprite1 = new Sprite(backgroundTexture);
-        backgroundSprite2 = new Sprite(backgroundTexture);
-        backgroundSprite1.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        backgroundSprite2.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-        // Position second sprite for scrolling
-        backgroundX2 = Gdx.graphics.getWidth();
-
-        // Initialize UI elements
         setupUI();
     }
 
@@ -64,7 +50,6 @@ public class PauseScreen extends BaseScreen {
 
         BitmapFont whiteFont = new BitmapFont(Gdx.files.internal("white.fnt"), false);
 
-        // Define button style with hover effect
         TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
         textButtonStyle.up = skin.getDrawable("menacing");
         textButtonStyle.over = skin.getDrawable("menacing2");
@@ -76,21 +61,13 @@ public class PauseScreen extends BaseScreen {
         buttonResume.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                sceneController.changeScreen(gameplayScreen); // Resume the game
+                System.out.println("Resuming Game...");
+                gameplayScreen.setPaused(false);  //unpause the game
+                sceneController.changeScreen(gameplayScreen);
             }
         });
 
-        // Restart Button
-        TextButton buttonRestart = new TextButton("Restart Game", textButtonStyle);
-        buttonRestart.pad(20, 50, 20, 50);
-        buttonRestart.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                sceneController.changeScreen(new GameplayScreen(sceneController, new MovementController(camera)));
-            }
-        });
-
-        // Create Quit Button
+        // Quit Button
         TextButton buttonQuit = new TextButton("Quit", textButtonStyle);
         buttonQuit.pad(20, 50, 20, 50);
         buttonQuit.addListener(new ClickListener() {
@@ -100,11 +77,8 @@ public class PauseScreen extends BaseScreen {
             }
         });
 
-        // Add buttons to the table
         table.row().pad(20);
         table.add(buttonResume).fillX().uniformX();
-        table.row().pad(20);
-        table.add(buttonRestart).fillX().uniformX();
         table.row().pad(20);
         table.add(buttonQuit).fillX().uniformX();
 
@@ -119,10 +93,8 @@ public class PauseScreen extends BaseScreen {
     @Override
     protected void draw() {
         batch.begin();
-        backgroundSprite1.setPosition(backgroundX1, 0);
-        backgroundSprite2.setPosition(backgroundX2, 0);
-        backgroundSprite1.draw(batch);
-        backgroundSprite2.draw(batch);
+        backgroundSprite.setPosition(0, 0);
+        backgroundSprite.draw(batch);
         batch.end();
 
         stage.draw();
@@ -131,20 +103,6 @@ public class PauseScreen extends BaseScreen {
     @Override
     public void render(float delta) {
         ScreenUtils.clear(0, 0, 0, 1);
-
-        // Scroll the background
-        float SCROLL_SPEED = 50f;
-        backgroundX1 -= SCROLL_SPEED * delta;
-        backgroundX2 -= SCROLL_SPEED * delta;
-
-        // Reset background positions if they go off-screen
-        if (backgroundX1 + backgroundSprite1.getWidth() <= 0) {
-            backgroundX1 = backgroundX2 + backgroundSprite2.getWidth();
-        }
-        if (backgroundX2 + backgroundSprite2.getWidth() <= 0) {
-            backgroundX2 = backgroundX1 + backgroundSprite1.getWidth();
-        }
-
         draw();
     }
 

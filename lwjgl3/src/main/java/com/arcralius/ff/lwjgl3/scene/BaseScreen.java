@@ -1,5 +1,6 @@
 package com.arcralius.ff.lwjgl3.scene;
 
+import com.arcralius.ff.lwjgl3.movement.MovementController;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.OrthographicCamera;
