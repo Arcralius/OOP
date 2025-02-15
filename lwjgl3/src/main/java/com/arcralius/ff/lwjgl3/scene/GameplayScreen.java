@@ -7,6 +7,7 @@ import com.arcralius.ff.lwjgl3.entity.EntityController; // Import EntityControll
 import com.badlogic.gdx.Gdx;
 import com.arcralius.ff.lwjgl3.movement.MovementController;
 import com.arcralius.ff.lwjgl3.scene.SceneController;
+import com.arcralius.ff.lwjgl3.collision.CollisionController;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -31,6 +32,8 @@ public class GameplayScreen extends BaseScreen {
     private List<BaseEntity> entityList;
     private EntityController entityController;
 
+    private CollisionController collisionController;
+
     public GameplayScreen(SceneController sceneController, MovementController movementController) {
         super();
         this.movementController = movementController;
@@ -38,6 +41,9 @@ public class GameplayScreen extends BaseScreen {
         // Initialize entity list and controller
         entityList = new ArrayList<>();
         entityController = new EntityController(entityList);
+
+        //Initialize collision controller
+        collisionController = new CollisionController();
 
         // Load map and textures
         this.map = new TmxMapLoader().load("background.tmx");
@@ -55,6 +61,8 @@ public class GameplayScreen extends BaseScreen {
         // Create an enemy (NonPlayableEntity) and add it to the entity controller
         NonPlayableEntity enemy = new NonPlayableEntity("droplet.png", 300, 300, "enemy", 300, 32, 32);
         entityController.addEntity(enemy);
+
+
     }
 
     @Override
@@ -66,6 +74,8 @@ public class GameplayScreen extends BaseScreen {
                 movementController.handleNPCMovement((NonPlayableEntity) entity, delta); // Handle NPC movement
             }
         }
+
+        collisionController.checkCollisions(entityList);
 
         camera.position.set(playableEntity.getX(), playableEntity.getY(), 0); // Camera follows the player
         camera.update();

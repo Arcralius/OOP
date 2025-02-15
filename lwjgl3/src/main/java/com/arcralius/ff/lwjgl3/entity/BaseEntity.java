@@ -78,6 +78,14 @@ public abstract class BaseEntity {
         speed = newSpeed;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    void setId(String newId) {
+        id = newId;
+    }
+
     // Dispose of resources (dispose texture)
     public void dispose() {
         textureObject.dispose(); // Dispose of the texture
