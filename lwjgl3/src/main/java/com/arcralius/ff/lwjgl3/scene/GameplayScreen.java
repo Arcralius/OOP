@@ -71,9 +71,9 @@ public class GameplayScreen extends BaseScreen {
 
     @Override
     protected void update(float delta) {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            Gdx.app.exit();  // Close the application
-        }
+//        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+//            Gdx.app.exit();  // Close the application
+//        }
 
         movementController.handleMovement(playableEntity, delta); // Call movement
 
