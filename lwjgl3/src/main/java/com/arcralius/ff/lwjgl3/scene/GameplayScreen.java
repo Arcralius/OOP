@@ -4,6 +4,7 @@ import com.arcralius.ff.lwjgl3.entity.BaseEntity;
 import com.arcralius.ff.lwjgl3.entity.PlayableEntity;
 import com.arcralius.ff.lwjgl3.entity.NonPlayableEntity;
 import com.arcralius.ff.lwjgl3.entity.EntityController;
+import com.arcralius.ff.lwjgl3.collision.CollisionController;
 import com.badlogic.gdx.Gdx;
 import com.arcralius.ff.lwjgl3.movement.MovementController;
 import com.badlogic.gdx.Input;
@@ -31,10 +32,12 @@ public class GameplayScreen extends BaseScreen {
     // Create the EntityController and List for managing entities
     private final List<BaseEntity> entityList;
     private final EntityController entityController;
+    private final CollisionController collisionController;
 
     public GameplayScreen(SceneController sceneController, MovementController movementController) {
         this.sceneController = sceneController;
         this.movementController = movementController;
+        this.collisionController = new CollisionController();
 
         // Initialize entity list and controller
         entityList = new ArrayList<>();
@@ -54,8 +57,12 @@ public class GameplayScreen extends BaseScreen {
         entityController.addEntity(playableEntity);
 
         // Create an enemy (NonPlayableEntity) and add it to the entity controller
-        NonPlayableEntity enemy = new NonPlayableEntity("droplet.png", 300, 300, "enemy", 300, 32, 32);
-        entityController.addEntity(enemy);
+        NonPlayableEntity enemy1 = new NonPlayableEntity("droplet.png", 300, 300, "enemy 1", 100, 32, 32);
+        NonPlayableEntity enemy2 = new NonPlayableEntity("droplet.png", 200, 100, "enemy 2", 200, 32, 32);
+        NonPlayableEntity enemy3 = new NonPlayableEntity("droplet.png", 300, 200, "enemy 3", 300, 32, 32);
+        entityController.addEntity(enemy1);
+        entityController.addEntity(enemy2);
+        entityController.addEntity(enemy3);
     }
 
     private boolean isPaused = false; // Tracks whether the game is paused
@@ -82,6 +89,8 @@ public class GameplayScreen extends BaseScreen {
         if (isPaused) return; // Stops updates when paused
         movementController.handleMovement(playableEntity, delta); // Call movement
         handleInput();
+
+        collisionController.checkCollisions(playableEntity, entityList);
 
         for (BaseEntity entity : entityList) {
             if (entity instanceof NonPlayableEntity) {
