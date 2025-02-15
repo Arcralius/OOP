@@ -17,6 +17,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.utils.compression.lzma.Base;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +31,7 @@ public class GameplayScreen extends BaseScreen {
 
     // Create the EntityController and List for managing entities
     private List<BaseEntity> entityList;
+    private List<BaseEntity> nonPlayableEntityList;
     private EntityController entityController;
 
     private CollisionController collisionController;
@@ -59,14 +61,20 @@ public class GameplayScreen extends BaseScreen {
         entityController.addEntity(playableEntity);
 
         // Create an enemy (NonPlayableEntity) and add it to the entity controller
-        NonPlayableEntity enemy = new NonPlayableEntity("droplet.png", 300, 300, "enemy", 300, 32, 32);
-        entityController.addEntity(enemy);
-
-
+        NonPlayableEntity enemy1 = new NonPlayableEntity("droplet.png", 300, 300, "enemy 1", 100, 32, 32);
+        NonPlayableEntity enemy2 = new NonPlayableEntity("droplet.png", 200, 100, "enemy 2", 200, 32, 32);
+        NonPlayableEntity enemy3 = new NonPlayableEntity("droplet.png", 300, 200, "enemy 3", 300, 32, 32);
+        entityController.addEntity(enemy1);
+        entityController.addEntity(enemy2);
+        entityController.addEntity(enemy3);
     }
 
     @Override
     protected void update(float delta) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            Gdx.app.exit();  // Close the application
+        }
+
         movementController.handleMovement(playableEntity, delta); // Call movement
 
         for (BaseEntity entity : entityList) {
@@ -75,7 +83,7 @@ public class GameplayScreen extends BaseScreen {
             }
         }
 
-        collisionController.checkCollisions(entityList);
+        collisionController.checkCollisions(playableEntity, entityList);
 
         camera.position.set(playableEntity.getX(), playableEntity.getY(), 0); // Camera follows the player
         camera.update();

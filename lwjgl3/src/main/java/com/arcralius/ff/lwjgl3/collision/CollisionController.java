@@ -1,7 +1,8 @@
 package com.arcralius.ff.lwjgl3.collision;
 
 
-    import com.arcralius.ff.lwjgl3.entity.BaseEntity; // Adjust package path as needed
+import com.arcralius.ff.lwjgl3.entity.BaseEntity;
+import com.arcralius.ff.lwjgl3.entity.NonPlayableEntity;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -11,14 +12,13 @@ import java.util.List;
 
 
 public class CollisionController {
-    public void checkCollisions(List<BaseEntity> entityList) {
+    public void checkCollisions(BaseEntity player, List<BaseEntity> entityList) {
         for (int i = 0; i < entityList.size(); i++) {
-            for (int j = i + 1; j < entityList.size(); j++) {
-                BaseEntity a = entityList.get(i);
-                BaseEntity b = entityList.get(j);
+            BaseEntity npc = entityList.get(i);
 
-                if (a.getBoundary().overlaps(b.getBoundary())) { // Use overlaps() instead
-                    handleCollision(a, b);
+            if (npc instanceof NonPlayableEntity) {
+                if (player.getBoundary().overlaps(npc.getBoundary())) {
+                    handleCollision(player, npc);
                 }
             }
         }
