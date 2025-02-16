@@ -1,13 +1,8 @@
 package com.arcralius.ff.lwjgl3.scene;
 
-//import com.arcralius.ff.lwjgl3.GameplayScreen;
-import com.arcralius.ff.lwjgl3.scene.BaseScreen;
-import com.arcralius.ff.lwjgl3.entity.PlayableEntity;
+import com.arcralius.ff.lwjgl3.input_output.AudioManager;
 import com.arcralius.ff.lwjgl3.movement.MovementController;
-import com.arcralius.ff.lwjgl3.scene.SceneController;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -26,15 +21,22 @@ public class MainMenuScreen extends BaseScreen {
     private TextureAtlas atlas;
     private Skin skin;
     private final SceneController sceneController;
+    private final AudioManager audioManager;
 
     // Background scrolling
     private Texture backgroundTexture;
     private Sprite backgroundSprite1, backgroundSprite2;
     private float backgroundX1 = 0, backgroundX2;
 
-    public MainMenuScreen(SceneController sceneController) {
+    public MainMenuScreen(SceneController sceneController, AudioManager audioManager) {
         this.sceneController = sceneController;
+        this.audioManager = audioManager;
+
+        // Load and start music
+        this.audioManager.loadMusic();
+        this.audioManager.playMusic("gameplay_music", true);
     }
+
 
     @Override
     public void show() {
@@ -79,7 +81,7 @@ public class MainMenuScreen extends BaseScreen {
         buttonPlay.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                sceneController.changeScreen(new GameplayScreen(sceneController, new MovementController(camera)));            }
+                sceneController.changeScreen(new GameplayScreen(sceneController, new MovementController(camera),audioManager));            }
         });
 
         // Create Settings Button
@@ -87,7 +89,7 @@ public class MainMenuScreen extends BaseScreen {
         buttonSettings.pad(20, 50, 20, 50);
         buttonSettings.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                sceneController.changeScreen(new SettingScreen(sceneController));
+                sceneController.changeScreen(new SettingScreen(sceneController, audioManager));
             }
         });
 

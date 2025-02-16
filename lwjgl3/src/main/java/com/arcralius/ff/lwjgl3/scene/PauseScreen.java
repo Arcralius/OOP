@@ -1,5 +1,6 @@
 package com.arcralius.ff.lwjgl3.scene;
 
+import com.arcralius.ff.lwjgl3.input_output.AudioManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -20,13 +21,17 @@ public class PauseScreen extends BaseScreen {
     private Skin skin;
     private final SceneController sceneController;
     private final GameplayScreen gameplayScreen;
+    private final AudioManager audioManager;
+    private TextButton buttonToggleMute;
+
 
     private Texture backgroundTexture;
     private Sprite backgroundSprite;
 
-    public PauseScreen(SceneController sceneController, GameplayScreen gameplayScreen) {
+    public PauseScreen(SceneController sceneController, GameplayScreen gameplayScreen, AudioManager audioManager) {
         this.sceneController = sceneController;
         this.gameplayScreen = gameplayScreen;
+        this.audioManager = audioManager;
     }
 
     @Override
@@ -67,6 +72,16 @@ public class PauseScreen extends BaseScreen {
             }
         });
 
+        // Mute/Unmute Button
+        buttonToggleMute = new TextButton(audioManager.isMuted() ? "Unmute Audio" : "Mute Audio", textButtonStyle);
+        buttonToggleMute.pad(20, 50, 20, 50);
+        buttonToggleMute.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                toggleAudio();
+            }
+        });
+
         // Quit Button
         TextButton buttonQuit = new TextButton("Quit", textButtonStyle);
         buttonQuit.pad(20, 50, 20, 50);
@@ -80,11 +95,17 @@ public class PauseScreen extends BaseScreen {
         table.row().pad(20);
         table.add(buttonResume).fillX().uniformX();
         table.row().pad(20);
+        table.add(buttonToggleMute).fillX().uniformX();
+        table.row().pad(20);
         table.add(buttonQuit).fillX().uniformX();
 
         stage.addActor(table);
     }
 
+    private void toggleAudio() {
+        audioManager.toggleMute();
+        buttonToggleMute.setText(audioManager.isMuted() ? "Unmute Audio" : "Mute Audio");
+    }
     @Override
     protected void update(float delta) {
         stage.act(delta);

@@ -1,6 +1,8 @@
 package com.arcralius.ff.lwjgl3.scene;
 
+import com.arcralius.ff.lwjgl3.input_output.AudioManager;
 import com.arcralius.ff.lwjgl3.movement.MovementController;
+import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.Gdx;
@@ -11,8 +13,11 @@ public class EndScreen extends com.arcralius.ff.lwjgl3.scene.BaseScreen {
     private final Texture background; // Set to final since it's initialized once
     private final BitmapFont font;
 
-    public EndScreen(SceneController sceneController) {
+    private final AudioManager audioManager;
+
+    public EndScreen(SceneController sceneController, AudioManager audioManager) {
         this.sceneController = sceneController;
+        this.audioManager = audioManager;
         this.background = new Texture("end_background.png"); // Ensure the file exists in the assets folder
         this.font = new BitmapFont(); // Customize font as needed
     }
@@ -40,7 +45,7 @@ public class EndScreen extends com.arcralius.ff.lwjgl3.scene.BaseScreen {
 
     private void handleInput() {
         if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
-            sceneController.changeScreen(new GameplayScreen(sceneController, new MovementController(camera)));
+            sceneController.changeScreen(new GameplayScreen(sceneController, new MovementController(camera), audioManager));
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             Gdx.app.exit();

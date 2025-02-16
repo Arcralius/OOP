@@ -5,6 +5,8 @@ import com.arcralius.ff.lwjgl3.entity.PlayableEntity;
 import com.arcralius.ff.lwjgl3.entity.NonPlayableEntity;
 import com.arcralius.ff.lwjgl3.entity.EntityController;
 import com.arcralius.ff.lwjgl3.collision.CollisionController;
+import com.arcralius.ff.lwjgl3.input_output.AudioManager;
+import com.badlogic.gdx.Audio;
 import com.badlogic.gdx.Gdx;
 import com.arcralius.ff.lwjgl3.movement.MovementController;
 import com.badlogic.gdx.Input;
@@ -26,6 +28,8 @@ public class GameplayScreen extends BaseScreen {
     private final Sprite backgroundSprite;
     private final MovementController movementController;
     private final SceneController sceneController;
+    private final AudioManager audioManager;
+
 
     private final PlayableEntity playableEntity;
 
@@ -34,9 +38,10 @@ public class GameplayScreen extends BaseScreen {
     private final EntityController entityController;
     private final CollisionController collisionController;
 
-    public GameplayScreen(SceneController sceneController, MovementController movementController) {
+    public GameplayScreen(SceneController sceneController, MovementController movementController, AudioManager audioManager) {
         this.sceneController = sceneController;
         this.movementController = movementController;
+        this.audioManager = audioManager;
         this.collisionController = new CollisionController();
 
         // Initialize entity list and controller
@@ -79,7 +84,7 @@ public class GameplayScreen extends BaseScreen {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             System.out.println("ESC pressed! Switching to PauseScreen...");
             isPaused = true; //Ensures update() stops running
-            sceneController.changeScreen(new PauseScreen(sceneController, this));
+            sceneController.changeScreen(new PauseScreen(sceneController, this, audioManager));
         }
     }
 

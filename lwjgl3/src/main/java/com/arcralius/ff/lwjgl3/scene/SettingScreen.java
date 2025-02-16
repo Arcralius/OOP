@@ -1,5 +1,6 @@
 package com.arcralius.ff.lwjgl3.scene;
 
+import com.arcralius.ff.lwjgl3.input_output.AudioManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -19,15 +20,15 @@ public class SettingScreen extends BaseScreen {
     private TextureAtlas atlas;
     private Skin skin;
     private final SceneController sceneController;
+    private final AudioManager audioManager;
 
     private Texture backgroundTexture;
-    private Sprite backgroundSprite1, backgroundSprite2;
-    private float backgroundX1 = 0, backgroundX2;
+    private Sprite backgroundSprite;
+    private TextButton buttonToggleMute;
 
-    private boolean isMuted = false;
-
-    public SettingScreen(SceneController sceneController) {
+    public SettingScreen(SceneController sceneController, AudioManager audioManager) {
         this.sceneController = sceneController;
+        this.audioManager = audioManager;
     }
 
     @Override
@@ -36,15 +37,8 @@ public class SettingScreen extends BaseScreen {
         Gdx.input.setInputProcessor(stage);
 
         backgroundTexture = new Texture(Gdx.files.internal("menubackground.png"));
-
-        // Initialize background sprites for scrolling effect
-        backgroundSprite1 = new Sprite(backgroundTexture);
-        backgroundSprite2 = new Sprite(backgroundTexture);
-        backgroundSprite1.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        backgroundSprite2.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-        // Position second sprite for scrolling
-        backgroundX2 = Gdx.graphics.getWidth();
+        backgroundSprite = new Sprite(backgroundTexture);
+        backgroundSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         setupUI();
     }
@@ -63,45 +57,37 @@ public class SettingScreen extends BaseScreen {
         textButtonStyle.over = skin.getDrawable("menacing2");
         textButtonStyle.font = whiteFont;
 
-        // Mute Button
-        TextButton buttonMute = new TextButton("Mute Audio", textButtonStyle);
-        buttonMute.pad(20, 50, 20, 50);
-        buttonMute.addListener(new ClickListener() {
+        // Mute/Unmute Button
+        buttonToggleMute = new TextButton(audioManager.isMuted() ? "Unmute Audio" : "Mute Audio", textButtonStyle);
+        buttonToggleMute.pad(20, 50, 20, 50);
+        buttonToggleMute.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                isMuted = true;
-                System.out.println("Audio Muted");
+                toggleAudio();
             }
         });
 
-        // Unmute Button
-        TextButton buttonUnmute = new TextButton("Unmute Audio", textButtonStyle);
-        buttonUnmute.pad(20, 50, 20, 50);
-        buttonUnmute.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                isMuted = false;
-                System.out.println("Audio Unmuted");
-            }
-        });
-
-        // Back to Main Menu
+        // Back Button
         TextButton buttonBack = new TextButton("Back to Main Menu", textButtonStyle);
         buttonBack.pad(20, 50, 20, 50);
         buttonBack.addListener(new ClickListener() {
+            @Override
             public void clicked(InputEvent event, float x, float y) {
-                sceneController.changeScreen(new MainMenuScreen(sceneController));
+                sceneController.changeScreen(new MainMenuScreen(sceneController, audioManager));
             }
         });
 
         table.row().pad(20);
-        table.add(buttonMute).fillX().uniformX();
-        table.row().pad(20);
-        table.add(buttonUnmute).fillX().uniformX();
+        table.add(buttonToggleMute).fillX().uniformX();
         table.row().pad(20);
         table.add(buttonBack).fillX().uniformX();
 
         stage.addActor(table);
+    }
+
+    private void toggleAudio() {
+        audioManager.toggleMute();
+        buttonToggleMute.setText(audioManager.isMuted() ? "Unmute Audio" : "Mute Audio");
     }
 
     @Override
@@ -112,10 +98,8 @@ public class SettingScreen extends BaseScreen {
     @Override
     protected void draw() {
         batch.begin();
-        backgroundSprite1.setPosition(backgroundX1, 0);
-        backgroundSprite2.setPosition(backgroundX2, 0);
-        backgroundSprite1.draw(batch);
-        backgroundSprite2.draw(batch);
+        backgroundSprite.setPosition(0, 0);
+        backgroundSprite.draw(batch);
         batch.end();
 
         stage.draw();
@@ -124,18 +108,6 @@ public class SettingScreen extends BaseScreen {
     @Override
     public void render(float delta) {
         ScreenUtils.clear(0, 0, 0, 1);
-
-        float SCROLL_SPEED = 50f;
-        backgroundX1 -= SCROLL_SPEED * delta;
-        backgroundX2 -= SCROLL_SPEED * delta;
-
-        if (backgroundX1 + backgroundSprite1.getWidth() <= 0) {
-            backgroundX1 = backgroundX2 + backgroundSprite2.getWidth();
-        }
-        if (backgroundX2 + backgroundSprite2.getWidth() <= 0) {
-            backgroundX2 = backgroundX1 + backgroundSprite1.getWidth();
-        }
-
         draw();
     }
 

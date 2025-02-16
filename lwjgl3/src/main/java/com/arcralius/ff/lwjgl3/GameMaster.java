@@ -14,11 +14,13 @@ public class GameMaster extends Game {
     public void create() {
         // Pass (Game instance) to SceneController
         sceneController = new SceneController(this);
-        sceneController.changeScreen(new MainMenuScreen(sceneController));
-
         audioManager = new AudioManager();
         audioManager.loadMusic();
-        audioManager.playMusic("test", true);
+        audioManager.playMusic("gameplay_music", true);
+
+        sceneController.changeScreen(new MainMenuScreen(sceneController, audioManager));
+
+
 
     }
 
