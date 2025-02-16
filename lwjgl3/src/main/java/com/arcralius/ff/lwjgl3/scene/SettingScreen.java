@@ -23,7 +23,8 @@ public class SettingScreen extends BaseScreen {
     private final AudioManager audioManager;
 
     private Texture backgroundTexture;
-    private Sprite backgroundSprite;
+    private Sprite backgroundSprite1, backgroundSprite2;
+    private float backgroundX1 = 0, backgroundX2;
     private TextButton buttonToggleMute;
 
     public SettingScreen(SceneController sceneController, AudioManager audioManager) {
@@ -36,9 +37,17 @@ public class SettingScreen extends BaseScreen {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
-        backgroundTexture = new Texture(Gdx.files.internal("menubackground.png"));
-        backgroundSprite = new Sprite(backgroundTexture);
-        backgroundSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        // Load the background texture
+        backgroundTexture = new Texture(Gdx.files.internal("menuBackground.png"));
+
+        // Initialize background sprites for scrolling
+        backgroundSprite1 = new Sprite(backgroundTexture);
+        backgroundSprite2 = new Sprite(backgroundTexture);
+        backgroundSprite1.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        backgroundSprite2.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+        // Position the second sprite to the right of the first one
+        backgroundX2 = Gdx.graphics.getWidth();
 
         setupUI();
     }
@@ -77,6 +86,7 @@ public class SettingScreen extends BaseScreen {
             }
         });
 
+        // Add buttons to the table
         table.row().pad(20);
         table.add(buttonToggleMute).fillX().uniformX();
         table.row().pad(20);
@@ -97,17 +107,35 @@ public class SettingScreen extends BaseScreen {
 
     @Override
     protected void draw() {
+        // Draw the scrolling background
         batch.begin();
-        backgroundSprite.setPosition(0, 0);
-        backgroundSprite.draw(batch);
+        backgroundSprite1.setPosition(backgroundX1, 0);
+        backgroundSprite2.setPosition(backgroundX2, 0);
+        backgroundSprite1.draw(batch);
+        backgroundSprite2.draw(batch);
         batch.end();
 
+        // Draw UI elements
         stage.draw();
     }
 
     @Override
     public void render(float delta) {
         ScreenUtils.clear(0, 0, 0, 1);
+
+        // Scroll the background
+        float SCROLL_SPEED = 50f;
+        backgroundX1 -= SCROLL_SPEED * delta;
+        backgroundX2 -= SCROLL_SPEED * delta;
+
+        // Reset background positions if they go off-screen
+        if (backgroundX1 + backgroundSprite1.getWidth() <= 0) {
+            backgroundX1 = backgroundX2 + backgroundSprite2.getWidth();
+        }
+        if (backgroundX2 + backgroundSprite2.getWidth() <= 0) {
+            backgroundX2 = backgroundX1 + backgroundSprite1.getWidth();
+        }
+
         draw();
     }
 

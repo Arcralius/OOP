@@ -111,9 +111,6 @@ public class MainMenuScreen extends BaseScreen {
         table.row().pad(20);
         table.add(buttonQuit).fillX().uniformX();
 
-
-
-
         stage.addActor(table);
     }
 
