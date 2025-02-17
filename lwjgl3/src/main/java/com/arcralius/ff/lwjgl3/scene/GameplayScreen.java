@@ -13,6 +13,8 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -38,11 +40,15 @@ public class GameplayScreen extends BaseScreen {
     private final EntityController entityController;
     private final CollisionController collisionController;
 
+    private BitmapFont font; // Font for displaying text
+    private String collisionMessage = ""; // Stores collision message
+    private float collisionTimer = 0; // Timer to make message disappear
+
     public GameplayScreen(SceneController sceneController, MovementController movementController, AudioManager audioManager) {
         this.sceneController = sceneController;
         this.movementController = movementController;
         this.audioManager = audioManager;
-        this.collisionController = new CollisionController();
+        this.collisionController = new CollisionController(this);
 
         // Initialize entity list and controller
         entityList = new ArrayList<>();
@@ -68,6 +74,9 @@ public class GameplayScreen extends BaseScreen {
         entityController.addEntity(enemy1);
         entityController.addEntity(enemy2);
         entityController.addEntity(enemy3);
+
+        // Initialize font
+        font = new BitmapFont();
     }
 
     private boolean isPaused = false; // Tracks whether the game is paused
@@ -78,6 +87,11 @@ public class GameplayScreen extends BaseScreen {
 
     public void setPaused(boolean paused) {
         this.isPaused = paused;
+    }
+
+    public void displayCollisionMessage(String message) {
+        this.collisionMessage = message;
+        this.collisionTimer = 2.0f; // Display message for 2 seconds
     }
 
     private void handleInput() {
@@ -105,6 +119,14 @@ public class GameplayScreen extends BaseScreen {
 
         camera.position.set(playableEntity.getX(), playableEntity.getY(), 0); // Camera follows the player
         camera.update();
+
+        // Reduce collision message display time
+        if (collisionTimer > 0) {
+            collisionTimer -= delta;
+            if (collisionTimer <= 0) {
+                collisionMessage = ""; // Remove message after time is up
+            }
+        }
     }
 
     @Override
@@ -123,6 +145,13 @@ public class GameplayScreen extends BaseScreen {
 
         // Draw all entities (including player and enemies) using the entityController
         entityController.draw(batch);
+
+        // Draw collision message at the player’s position
+        if (!collisionMessage.isEmpty()) {
+            batch.begin();
+            font.draw(batch, collisionMessage, playableEntity.getX(), playableEntity.getY() + 50);
+            batch.end();
+        }
     }
 
     @Override
@@ -131,5 +160,6 @@ public class GameplayScreen extends BaseScreen {
         map.dispose();
         mapRenderer.dispose();
         backgroundTexture.dispose();
+        font.dispose();
     }
 }
