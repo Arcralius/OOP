@@ -15,8 +15,10 @@ public class GameMaster extends Game {
         // Pass (Game instance) to SceneController
         sceneController = new SceneController(this);
         audioManager = new AudioManager();
-        audioManager.loadMusic();
-        audioManager.playMusic("gameplay_music", true);
+        audioManager.loadMusic("gameplay_music","music/game_music.mp3");
+        audioManager.loadMusic("main_menu_music","music/main_menu.mp3");
+        audioManager.loadMusic("gameover_music","music/game_over.mp3");
+
 
         sceneController.changeScreen(new MainMenuScreen(sceneController, audioManager));
 

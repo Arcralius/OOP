@@ -16,10 +16,12 @@ public class AudioManager {
         this.musicTracks = new HashMap<>();
     }
 
-    public void loadMusic() {
-        FileHandle musicFile = Gdx.files.internal("music/game_music.mp3");
+    public void loadMusic(String trackName, String filePath) {
+        //FileHandle musicFile = Gdx.files.internal("music/game_music.mp3");
+
+        FileHandle musicFile = Gdx.files.internal(filePath);
         Music music = Gdx.audio.newMusic(musicFile);
-        musicTracks.put("gameplay_music", music); // Store music with a name
+        musicTracks.put(trackName, music); // Store music with a name
 
         if(!musicFile.exists()) {
             System.out.println("ERROR: Music file not found at " + musicFile.path());

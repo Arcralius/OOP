@@ -18,7 +18,10 @@ public class EndScreen extends com.arcralius.ff.lwjgl3.scene.BaseScreen {
     public EndScreen(SceneController sceneController, AudioManager audioManager) {
         this.sceneController = sceneController;
         this.audioManager = audioManager;
-        this.background = new Texture("end_background.png"); // Ensure the file exists in the assets folder
+        this.audioManager.stopMusic("gameplay_music");
+        this.audioManager.playMusic("gameover_music", true);
+        //this.background = new Texture("end_background.png"); // Ensure the file exists in the assets folder
+        this.background = new Texture("menuBackground.png");
         this.font = new BitmapFont(); // Customize font as needed
     }
 

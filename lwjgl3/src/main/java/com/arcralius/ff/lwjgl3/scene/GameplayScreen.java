@@ -48,7 +48,10 @@ public class GameplayScreen extends BaseScreen {
         this.sceneController = sceneController;
         this.movementController = movementController;
         this.audioManager = audioManager;
-        this.collisionController = new CollisionController(this);
+        this.collisionController = new CollisionController(this, this.sceneController, this.audioManager);
+        // Load and start music
+        audioManager.stopMusic("main_menu_music");
+        this.audioManager.playMusic("gameplay_music", true);
 
         // Initialize entity list and controller
         entityList = new ArrayList<>();

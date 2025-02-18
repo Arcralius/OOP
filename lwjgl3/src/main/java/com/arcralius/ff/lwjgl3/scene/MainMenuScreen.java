@@ -33,8 +33,7 @@ public class MainMenuScreen extends BaseScreen {
         this.audioManager = audioManager;
 
         // Load and start music
-        this.audioManager.loadMusic();
-        this.audioManager.playMusic("gameplay_music", true);
+        this.audioManager.playMusic("main_menu_music", true);
     }
 
 
@@ -80,8 +79,9 @@ public class MainMenuScreen extends BaseScreen {
         buttonPlay.pad(20, 50, 20, 50);
         buttonPlay.addListener(new ClickListener() {
             @Override
-            public void clicked(InputEvent event, float x, float y) {
-                sceneController.changeScreen(new GameplayScreen(sceneController, new MovementController(camera),audioManager));            }
+            public void clicked(InputEvent event, float x, float y){
+                sceneController.changeScreen(new GameplayScreen(sceneController, new MovementController(camera),audioManager));
+            }
         });
 
         // Create Settings Button
