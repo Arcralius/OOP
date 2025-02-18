@@ -19,7 +19,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.utils.compression.lzma.Base;
-
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -120,6 +120,7 @@ public class GameplayScreen extends BaseScreen {
             }
         }
 
+        camera.zoom = 0.60f; // Zoom in (adjust as needed)
         camera.position.set(playableEntity.getX(), playableEntity.getY(), 0); // Camera follows the player
         camera.update();
 

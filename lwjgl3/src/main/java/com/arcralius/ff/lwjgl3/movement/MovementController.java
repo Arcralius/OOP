@@ -41,6 +41,18 @@ public class MovementController {
         if (Gdx.input.isKeyPressed(Input.Keys.S)) newY -= speed * delta;
         if (Gdx.input.isKeyPressed(Input.Keys.D)) newX += speed * delta;
 
+        if (newX < 0) {
+            newX = 0;
+        }else if (newX > 940){
+            newX = 940;
+        }
+
+        if (newY < 0){
+            newY = 0;
+        }else if (newY > 940){
+            newY = 940;
+        }
+
         player.setX(newX);
         player.setY(newY);
     }
@@ -58,17 +70,34 @@ public class MovementController {
         // Move the droplet in the current direction
         switch (currentDirection) {
             case 0: // UP
-                entity.setY(entity.getY() + npc_speed * delta);
+                if (entity.getY() + npc_speed * delta > 940) {
+                    entity.setY(940);
+                } else {
+                    entity.setY(entity.getY() + npc_speed * delta);
+                }
                 break;
             case 1: // DOWN
-                entity.setY(entity.getY() - npc_speed * delta);
+                if (entity.getY() - npc_speed * delta < 0) {
+                    entity.setY(0);
+                } else {
+                    entity.setY(entity.getY() - npc_speed * delta);
+                }
                 break;
             case 2: // LEFT
-                entity.setX(entity.getX() - npc_speed * delta);
+                if (entity.getX() - npc_speed * delta < 0) {
+                    entity.setX(0);
+                } else {
+                    entity.setX(entity.getX() - npc_speed * delta);
+                }
                 break;
             case 3: // RIGHT
-                entity.setX(entity.getX() + npc_speed * delta);
+                if (entity.getX() + npc_speed * delta > 940) { // Adjust 1280 based on your actual boundary
+                    entity.setX(940);
+                } else {
+                    entity.setX(entity.getX() + npc_speed * delta);
+                }
                 break;
         }
+
     }
 }
