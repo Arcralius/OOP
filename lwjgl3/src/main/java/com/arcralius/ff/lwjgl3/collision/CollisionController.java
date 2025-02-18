@@ -12,7 +12,7 @@ import com.badlogic.gdx.math.Rectangle;
 import java.util.List;
 
 
-public class CollisionController {
+public class CollisionController implements CollisionInterface {
     private GameplayScreen gameplayScreen;
 
     public CollisionController(GameplayScreen gameplayScreen) {
@@ -31,7 +31,7 @@ public class CollisionController {
         }
     }
 
-    private void handleCollision(BaseEntity a, BaseEntity b) {
+    public void handleCollision(BaseEntity a, BaseEntity b) {
         System.out.println("Collision detected between " + a.getId() + " and " + b.getId());
         gameplayScreen.displayCollisionMessage("Collided with " + b.getId() + "!");
         // Implement additional collision handling logic (e.g., health reduction, bounce effect)
