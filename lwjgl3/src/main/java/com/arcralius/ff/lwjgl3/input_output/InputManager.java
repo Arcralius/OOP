@@ -1,24 +1,41 @@
 package com.arcralius.ff.lwjgl3.input_output;
 
 public class InputManager {
-    private KeyboardManager keyboardManager;
-    private MouseManager mouseManager;
+    private final KeyboardManager keyboardManager;
+    private final MouseManager mouseManager;
 
     public InputManager() {
         this.keyboardManager = new KeyboardManager();
         this.mouseManager = new MouseManager();
     }
 
-    public void pollInput() {
-        keyboardManager.pollInput();
-        mouseManager.pollInput();
+    // Update method to refresh input states
+    public void update() {
+        keyboardManager.update();
+        mouseManager.update();
     }
 
-    public KeyboardManager getKeyboardManager() {
-        return keyboardManager;
+    // Check if a specific key is currently pressed
+    public boolean isKeyPressed(int key) {
+        return keyboardManager.isKeyPressed(key);
     }
 
-    public MouseManager getMouseManager() {
-        return mouseManager;
+    // Check if a specific key was just released
+    public boolean isKeyJustReleased(int key) {
+        return keyboardManager.isKeyJustReleased(key);
+    }
+
+    // Check if a mouse button is pressed
+    public boolean isMouseButtonPressed(int button) {
+        return mouseManager.isMouseButtonPressed(button);
+    }
+
+    // Get mouse position
+    public float getMouseX() {
+        return mouseManager.getMouseX();
+    }
+
+    public float getMouseY() {
+        return mouseManager.getMouseY();
     }
 }
