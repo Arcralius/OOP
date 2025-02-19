@@ -5,7 +5,6 @@ import com.arcralius.ff.lwjgl3.collision.CollisionController;
 import com.arcralius.ff.lwjgl3.entity.BaseEntity;
 import com.arcralius.ff.lwjgl3.entity.EntityController;
 import com.arcralius.ff.lwjgl3.entity.PlayableEntity;
-import com.arcralius.ff.lwjgl3.input_output.AudioManager;
 import com.arcralius.ff.lwjgl3.input_output.IO_Controller;
 import com.arcralius.ff.lwjgl3.movement.MovementController;
 import com.arcralius.ff.lwjgl3.scene.SceneController;
@@ -32,13 +31,13 @@ public class Gameplay_example extends GameplayScreen {
     private float collisionTimer = 0; // Timer to make message disappear
 
 
-    public Gameplay_example(IO_Controller ioController, SceneController sceneController, MovementController movementController, AudioManager audioManager) {
-        super(ioController, sceneController, movementController, audioManager);
+    public Gameplay_example(IO_Controller ioController, SceneController sceneController, MovementController movementController) {
+        super(ioController, sceneController, movementController);
 
 
         // Load and start music
-        audioManager.stopMusic("main_menu_music");
-        audioManager.playMusic("gameplay_music", true);
+        ioController.getAudioManager().stopMusic("main_menu_music");
+        ioController.getAudioManager().playMusic("gameplay_music", true);
 
         // Initialize entity list and controller
 

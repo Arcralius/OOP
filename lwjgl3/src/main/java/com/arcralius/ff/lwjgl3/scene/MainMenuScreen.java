@@ -1,7 +1,6 @@
 package com.arcralius.ff.lwjgl3.scene;
 
 import com.arcralius.ff.lwjgl3.examples.Gameplay_example;
-import com.arcralius.ff.lwjgl3.input_output.AudioManager;
 import com.arcralius.ff.lwjgl3.input_output.IO_Controller;
 import com.arcralius.ff.lwjgl3.movement.MovementController;
 import com.badlogic.gdx.Gdx;
@@ -23,7 +22,6 @@ public class MainMenuScreen extends BaseScreen {
     private TextureAtlas atlas;
     private Skin skin;
     private final SceneController sceneController;
-    private final AudioManager audioManager;
     private final IO_Controller ioController;
 
     // Background scrolling
@@ -31,17 +29,15 @@ public class MainMenuScreen extends BaseScreen {
     private Sprite backgroundSprite1, backgroundSprite2;
     private float backgroundX1 = 0, backgroundX2;
 
-    public MainMenuScreen(IO_Controller ioController, SceneController sceneController, AudioManager audioManager) {
+    public MainMenuScreen(IO_Controller ioController, SceneController sceneController) {
         this.ioController = ioController;
         this.sceneController = sceneController;
-        this.audioManager = audioManager;
 
-        if (!"main_menu_music".equals(this.audioManager.getCurrentTrack())) {
-            this.audioManager.playMusic("main_menu_music", true);
+        // Ensure the correct music is playing
+        if (!"main_menu_music".equals(this.ioController.getAudioManager().getCurrentTrack())) {
+            this.ioController.getAudioManager().playMusic("main_menu_music", true);
         }
-
     }
-
 
     @Override
     public void show() {
@@ -85,8 +81,8 @@ public class MainMenuScreen extends BaseScreen {
         buttonPlay.pad(20, 50, 20, 50);
         buttonPlay.addListener(new ClickListener() {
             @Override
-            public void clicked(InputEvent event, float x, float y){
-                sceneController.changeScreen(new Gameplay_example(ioController, sceneController, new MovementController(ioController, camera), audioManager));
+            public void clicked(InputEvent event, float x, float y) {
+                sceneController.changeScreen(new Gameplay_example(ioController, sceneController, new MovementController(ioController, camera)));
             }
         });
 
@@ -95,7 +91,7 @@ public class MainMenuScreen extends BaseScreen {
         buttonSettings.pad(20, 50, 20, 50);
         buttonSettings.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
-                sceneController.changeScreen(new SettingScreen(ioController, sceneController, audioManager));
+                sceneController.changeScreen(new SettingScreen(ioController, sceneController));
             }
         });
 
@@ -157,7 +153,6 @@ public class MainMenuScreen extends BaseScreen {
         }
 
         draw();
-
     }
 
     @Override

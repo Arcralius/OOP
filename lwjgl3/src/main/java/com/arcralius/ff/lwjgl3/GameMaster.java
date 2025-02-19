@@ -3,33 +3,28 @@ package com.arcralius.ff.lwjgl3;
 import com.badlogic.gdx.Game;
 import com.arcralius.ff.lwjgl3.scene.SceneController;
 import com.arcralius.ff.lwjgl3.scene.MainMenuScreen;
-import com.arcralius.ff.lwjgl3.input_output.AudioManager;
 import com.arcralius.ff.lwjgl3.input_output.IO_Controller;
-
 
 public class GameMaster extends Game {
     private SceneController sceneController;
-    private AudioManager audioManager;
     private IO_Controller ioController;
 
     @Override
     public void create() {
-        // Pass (Game instance) to SceneController
-        sceneController = new SceneController(this);
-        audioManager = new AudioManager();
+        // Initialize IO_Controller and SceneController
         ioController = new IO_Controller();
-        audioManager.loadAllMusic();
+        sceneController = new SceneController(this);
 
+        // Load all audio files via IO_Controller
+        ioController.getAudioManager().loadAllMusic();
 
-        sceneController.changeScreen(new MainMenuScreen(ioController, sceneController, audioManager));
-
-
-
+        // Start with the main menu screen
+        sceneController.changeScreen(new MainMenuScreen(ioController, sceneController));
     }
 
     @Override
     public void render() {
-        super.render(); //Use Game's render method
+        super.render(); // Use Game's render method
     }
 
     @Override

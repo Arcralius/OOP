@@ -1,6 +1,5 @@
 package com.arcralius.ff.lwjgl3.scene;
 
-import com.arcralius.ff.lwjgl3.input_output.AudioManager;
 import com.arcralius.ff.lwjgl3.input_output.IO_Controller;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -22,9 +21,7 @@ public class SettingScreen extends BaseScreen {
     private TextureAtlas atlas;
     private Skin skin;
     private final SceneController sceneController;
-    private final AudioManager audioManager;
     private final IO_Controller ioController;
-
     private Texture backgroundTexture;
     private Sprite backgroundSprite1, backgroundSprite2;
     private float backgroundX1 = 0, backgroundX2;
@@ -32,12 +29,11 @@ public class SettingScreen extends BaseScreen {
     private TextButton buttonVolumeUp;
     private TextButton buttonVolumeDown;
     private Label volumeLabel;
-    private float volumeStep = 0.1f;
+    private final float volumeStep = 0.1f;
 
-    public SettingScreen(IO_Controller ioController, SceneController sceneController, AudioManager audioManager) {
-        this.sceneController = sceneController;
-        this.audioManager = audioManager;
+    public SettingScreen(IO_Controller ioController, SceneController sceneController) {
         this.ioController = ioController;
+        this.sceneController = sceneController;
     }
 
     @Override
@@ -71,7 +67,7 @@ public class SettingScreen extends BaseScreen {
 
         volumeLabel = new Label(getVolumeText(), new Label.LabelStyle(whiteFont, null));
 
-        buttonToggleMute = new TextButton(audioManager.isMuted() ? "Unmute Audio" : "Mute Audio", textButtonStyle);
+        buttonToggleMute = new TextButton(ioController.getAudioManager().isMuted() ? "Unmute Audio" : "Mute Audio", textButtonStyle);
         buttonToggleMute.pad(20, 50, 20, 50);
         buttonToggleMute.addListener(new ClickListener() {
             @Override
@@ -80,28 +76,26 @@ public class SettingScreen extends BaseScreen {
             }
         });
 
-        //Volume Up Button
         buttonVolumeUp = new TextButton("Volume Up", textButtonStyle);
         buttonVolumeUp.pad(20);
         buttonVolumeUp.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                float currentVolume = audioManager.getVolume();
+                float currentVolume = ioController.getAudioManager().getVolume();
                 float newVolume = Math.min(1.0f, currentVolume + volumeStep);
-                audioManager.setVolume(newVolume);
+                ioController.getAudioManager().setVolume(newVolume);
                 updateVolumeLabel();
             }
         });
 
-        //Volume Down Button
         buttonVolumeDown = new TextButton("Volume Down", textButtonStyle);
         buttonVolumeDown.pad(20);
         buttonVolumeDown.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                float currentVolume = audioManager.getVolume();
+                float currentVolume = ioController.getAudioManager().getVolume();
                 float newVolume = Math.max(0.0f, currentVolume - volumeStep);
-                audioManager.setVolume(newVolume);
+                ioController.getAudioManager().setVolume(newVolume);
                 updateVolumeLabel();
             }
         });
@@ -111,11 +105,10 @@ public class SettingScreen extends BaseScreen {
         buttonBack.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                sceneController.changeScreen(new MainMenuScreen(ioController, sceneController, audioManager));
+                sceneController.changeScreen(new MainMenuScreen(ioController, sceneController));
             }
         });
 
-        // Volume Row (Centered with Volume Up/Down on sides)
         Table volumeLabelTable = new Table();
         volumeLabelTable.add(volumeLabel).center();
 
@@ -126,26 +119,23 @@ public class SettingScreen extends BaseScreen {
         Table muteRow = new Table();
         muteRow.add(buttonToggleMute).fillX().uniformX();
 
-        // Back Button Row (Centered)
         Table backRow = new Table();
         backRow.add(buttonBack).fillX().uniformX();
 
-
-        // Main Table Layout
-        table.add(muteRow).center().padTop(20).fillX().uniformX(); // Toggle Mute, centered
-        table.row().padTop(20); // Spacing
-        table.add(volumeLabelTable).center().padTop(20); // Label above, centered
+        table.add(muteRow).center().padTop(20).fillX().uniformX();
+        table.row().padTop(20);
+        table.add(volumeLabelTable).center().padTop(20);
         table.row().padTop(10);
-        table.add(volumeRow).center().padTop(20); // Volume row at the top, centered
-        table.row().padTop(20); // Spacing
-        table.add(backRow).center().padBottom(20); // Back button at the bottom, centered
+        table.add(volumeRow).center().padTop(20);
+        table.row().padTop(20);
+        table.add(backRow).center().padBottom(20);
 
         stage.addActor(table);
     }
 
     private void toggleAudio() {
-        audioManager.toggleMute();
-        buttonToggleMute.setText(audioManager.isMuted() ? "Unmute Audio" : "Mute Audio");
+        ioController.getAudioManager().toggleMute();
+        buttonToggleMute.setText(ioController.getAudioManager().isMuted() ? "Unmute Audio" : "Mute Audio");
         updateVolumeLabel();
     }
 
@@ -154,7 +144,7 @@ public class SettingScreen extends BaseScreen {
     }
 
     private String getVolumeText() {
-        return "Volume: " + (audioManager.isMuted() ? "Muted" : String.format("%.1f", audioManager.getVolume()));
+        return "Volume: " + (ioController.getAudioManager().isMuted() ? "Muted" : String.format("%.1f", ioController.getAudioManager().getVolume()));
     }
 
     @Override

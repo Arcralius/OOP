@@ -5,7 +5,6 @@ import com.arcralius.ff.lwjgl3.entity.PlayableEntity;
 import com.arcralius.ff.lwjgl3.entity.NonPlayableEntity;
 import com.arcralius.ff.lwjgl3.entity.EntityController;
 import com.arcralius.ff.lwjgl3.collision.CollisionController;
-import com.arcralius.ff.lwjgl3.input_output.AudioManager;
 import com.arcralius.ff.lwjgl3.input_output.IO_Controller;
 import com.badlogic.gdx.Gdx;
 import com.arcralius.ff.lwjgl3.movement.MovementController;
@@ -30,7 +29,6 @@ public class GameplayScreen extends BaseScreen {
     private final Sprite backgroundSprite;
     private final MovementController movementController;
     private final SceneController sceneController;
-    private final AudioManager audioManager;
     private final PlayableEntity playableEntity;
 
     // Create the EntityController and List for managing entities
@@ -42,16 +40,15 @@ public class GameplayScreen extends BaseScreen {
     private float collisionTimer = 0; // Timer to make message disappear
     protected boolean isPaused = false; // Tracks whether the game is paused
 
-    public GameplayScreen(IO_Controller ioController, SceneController sceneController, MovementController movementController, AudioManager audioManager) {
+    public GameplayScreen(IO_Controller ioController, SceneController sceneController, MovementController movementController) {
         this.ioController = ioController;
         this.sceneController = sceneController;
         this.movementController = movementController;
-        this.audioManager = audioManager;
-        this.collisionController = new CollisionController(ioController, this, sceneController, audioManager);
+        this.collisionController = new CollisionController(ioController, this, sceneController);
 //
 //        // Load and start music
-//        audioManager.stopMusic("main_menu_music");
-//        this.audioManager.playMusic("gameplay_music", true);
+//        this.ioController.getAudioManager().stopMusic("main_menu_music");
+//        this.ioController.getAudioManager().playMusic("gameplay_music", true);
 //
         // Initialize entity list and controller
         entityList = new ArrayList<>();
@@ -101,7 +98,7 @@ public class GameplayScreen extends BaseScreen {
         if (ioController.getInputManager().isKeyJustReleased(Input.Keys.ESCAPE)) {
             System.out.println("ESC pressed! Switching to PauseScreen...");
             isPaused = true; // Ensures update() stops running
-            sceneController.changeScreen(new PauseScreen(sceneController, this, audioManager));
+            sceneController.changeScreen(new PauseScreen(ioController, sceneController, this));
         }
         }
 

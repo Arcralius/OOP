@@ -18,4 +18,8 @@ public class IO_Controller {
     public InputManager getInputManager() {
         return inputManager;
     }
+
+    public AudioManager getAudioManager() {
+        return audioManager;
+    }
 }

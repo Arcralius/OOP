@@ -1,7 +1,6 @@
 package com.arcralius.ff.lwjgl3.scene;
 
 import com.arcralius.ff.lwjgl3.examples.Gameplay_example;
-import com.arcralius.ff.lwjgl3.input_output.AudioManager;
 import com.arcralius.ff.lwjgl3.input_output.IO_Controller;
 import com.arcralius.ff.lwjgl3.movement.MovementController;
 import com.badlogic.gdx.Input;
@@ -9,19 +8,21 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.Gdx;
 
-public class EndScreen extends com.arcralius.ff.lwjgl3.scene.BaseScreen {
+public class EndScreen extends BaseScreen {
     private final IO_Controller ioController;
     private final SceneController sceneController;
-    private final Texture background; // Set to final since it’s initialized once
+    private final Texture background;
     private final BitmapFont font;
-    private final AudioManager audioManager;
 
-    public EndScreen(IO_Controller ioController, SceneController sceneController, AudioManager audioManager) {
+    public EndScreen(IO_Controller ioController, SceneController sceneController) {
         this.ioController = ioController;
         this.sceneController = sceneController;
-        this.audioManager = audioManager;
-        this.audioManager.stopMusic("gameplay_music");
-        this.audioManager.playMusic("gameover_music", true);
+
+        // Stop gameplay music and play game over music
+        this.ioController.getAudioManager().stopMusic("gameplay_music");
+        this.ioController.getAudioManager().playMusic("gameover_music", true);
+
+        // Load assets
         this.background = new Texture("menuBackground.png");
         this.font = new BitmapFont(); // Customize font as needed
     }
@@ -50,7 +51,7 @@ public class EndScreen extends com.arcralius.ff.lwjgl3.scene.BaseScreen {
 
     private void handleInput() {
         if (ioController.getInputManager().isKeyJustReleased(Input.Keys.R)) {
-            sceneController.changeScreen(new Gameplay_example(ioController, sceneController, new MovementController(ioController, camera), audioManager));
+            sceneController.changeScreen(new Gameplay_example(ioController, sceneController, new MovementController(ioController, camera)));
         }
         if (ioController.getInputManager().isKeyJustReleased(Input.Keys.ESCAPE)) {
             Gdx.app.exit();
