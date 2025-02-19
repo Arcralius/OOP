@@ -9,11 +9,22 @@ public class AudioManager {
     private float volume;
     private Map<String, Music> musicTracks;
     private Music currentTrack;
+    private String currentTrackName;
     private boolean isMuted = false; // Track mute state
 
     public AudioManager() {
         this.volume = 1.0f; // Default volume
         this.musicTracks = new HashMap<>();
+    }
+
+    public String getCurrentTrack(){
+        return currentTrackName;
+    }
+
+    public void loadAllMusic(){
+        loadMusic("gameplay_music","music/game_music.mp3");
+        loadMusic("main_menu_music","music/main_menu.mp3");
+        loadMusic("gameover_music","music/game_over.mp3");
     }
 
     public void loadMusic(String trackName, String filePath) {
@@ -37,6 +48,7 @@ public class AudioManager {
 
         stopCurrentMusic();
         currentTrack = musicTracks.get(trackName);
+        currentTrackName = trackName;
         currentTrack.setLooping(looping);
         currentTrack.setVolume(isMuted ? 0 : volume); // Apply mute state
         currentTrack.play();
@@ -68,6 +80,9 @@ public class AudioManager {
         return isMuted;
     }
 
+    public float getVolume(){
+        return volume;
+    }
     public void setVolume(float level) {
         if (!isMuted) { // Only update volume if NOT muted
             this.volume = level;

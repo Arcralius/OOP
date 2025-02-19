@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -28,6 +29,10 @@ public class SettingScreen extends BaseScreen {
     private Sprite backgroundSprite1, backgroundSprite2;
     private float backgroundX1 = 0, backgroundX2;
     private TextButton buttonToggleMute;
+    private TextButton buttonVolumeUp;
+    private TextButton buttonVolumeDown;
+    private Label volumeLabel;
+    private float volumeStep = 0.1f;
 
     public SettingScreen(IO_Controller ioController, SceneController sceneController, AudioManager audioManager) {
         this.sceneController = sceneController;
@@ -40,16 +45,11 @@ public class SettingScreen extends BaseScreen {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
-        // Load the background texture
         backgroundTexture = new Texture(Gdx.files.internal("menuBackground.png"));
-
-        // Initialize background sprites for scrolling
         backgroundSprite1 = new Sprite(backgroundTexture);
         backgroundSprite2 = new Sprite(backgroundTexture);
         backgroundSprite1.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         backgroundSprite2.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-        // Position the second sprite to the right of the first one
         backgroundX2 = Gdx.graphics.getWidth();
 
         setupUI();
@@ -69,7 +69,8 @@ public class SettingScreen extends BaseScreen {
         textButtonStyle.over = skin.getDrawable("menacing2");
         textButtonStyle.font = whiteFont;
 
-        // Mute/Unmute Button
+        volumeLabel = new Label(getVolumeText(), new Label.LabelStyle(whiteFont, null));
+
         buttonToggleMute = new TextButton(audioManager.isMuted() ? "Unmute Audio" : "Mute Audio", textButtonStyle);
         buttonToggleMute.pad(20, 50, 20, 50);
         buttonToggleMute.addListener(new ClickListener() {
@@ -79,7 +80,32 @@ public class SettingScreen extends BaseScreen {
             }
         });
 
-        // Back Button
+        //Volume Up Button
+        buttonVolumeUp = new TextButton("Volume Up", textButtonStyle);
+        buttonVolumeUp.pad(20);
+        buttonVolumeUp.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                float currentVolume = audioManager.getVolume();
+                float newVolume = Math.min(1.0f, currentVolume + volumeStep);
+                audioManager.setVolume(newVolume);
+                updateVolumeLabel();
+            }
+        });
+
+        //Volume Down Button
+        buttonVolumeDown = new TextButton("Volume Down", textButtonStyle);
+        buttonVolumeDown.pad(20);
+        buttonVolumeDown.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                float currentVolume = audioManager.getVolume();
+                float newVolume = Math.max(0.0f, currentVolume - volumeStep);
+                audioManager.setVolume(newVolume);
+                updateVolumeLabel();
+            }
+        });
+
         TextButton buttonBack = new TextButton("Back to Main Menu", textButtonStyle);
         buttonBack.pad(20, 50, 20, 50);
         buttonBack.addListener(new ClickListener() {
@@ -89,11 +115,30 @@ public class SettingScreen extends BaseScreen {
             }
         });
 
-        // Add buttons to the table
-        table.row().pad(20);
-        table.add(buttonToggleMute).fillX().uniformX();
-        table.row().pad(20);
-        table.add(buttonBack).fillX().uniformX();
+        // Volume Row (Centered with Volume Up/Down on sides)
+        Table volumeLabelTable = new Table();
+        volumeLabelTable.add(volumeLabel).center();
+
+        Table volumeRow = new Table();
+        volumeRow.add(buttonVolumeDown).padRight(20);
+        volumeRow.add(buttonVolumeUp).padLeft(20);
+
+        Table muteRow = new Table();
+        muteRow.add(buttonToggleMute).fillX().uniformX();
+
+        // Back Button Row (Centered)
+        Table backRow = new Table();
+        backRow.add(buttonBack).fillX().uniformX();
+
+
+        // Main Table Layout
+        table.add(muteRow).center().padTop(20).fillX().uniformX(); // Toggle Mute, centered
+        table.row().padTop(20); // Spacing
+        table.add(volumeLabelTable).center().padTop(20); // Label above, centered
+        table.row().padTop(10);
+        table.add(volumeRow).center().padTop(20); // Volume row at the top, centered
+        table.row().padTop(20); // Spacing
+        table.add(backRow).center().padBottom(20); // Back button at the bottom, centered
 
         stage.addActor(table);
     }
@@ -101,6 +146,15 @@ public class SettingScreen extends BaseScreen {
     private void toggleAudio() {
         audioManager.toggleMute();
         buttonToggleMute.setText(audioManager.isMuted() ? "Unmute Audio" : "Mute Audio");
+        updateVolumeLabel();
+    }
+
+    private void updateVolumeLabel() {
+        volumeLabel.setText(getVolumeText());
+    }
+
+    private String getVolumeText() {
+        return "Volume: " + (audioManager.isMuted() ? "Muted" : String.format("%.1f", audioManager.getVolume()));
     }
 
     @Override
@@ -110,7 +164,6 @@ public class SettingScreen extends BaseScreen {
 
     @Override
     protected void draw() {
-        // Draw the scrolling background
         batch.begin();
         backgroundSprite1.setPosition(backgroundX1, 0);
         backgroundSprite2.setPosition(backgroundX2, 0);
@@ -118,7 +171,6 @@ public class SettingScreen extends BaseScreen {
         backgroundSprite2.draw(batch);
         batch.end();
 
-        // Draw UI elements
         stage.draw();
     }
 
@@ -126,12 +178,10 @@ public class SettingScreen extends BaseScreen {
     public void render(float delta) {
         ScreenUtils.clear(0, 0, 0, 1);
 
-        // Scroll the background
         float SCROLL_SPEED = 50f;
         backgroundX1 -= SCROLL_SPEED * delta;
         backgroundX2 -= SCROLL_SPEED * delta;
 
-        // Reset background positions if they go off-screen
         if (backgroundX1 + backgroundSprite1.getWidth() <= 0) {
             backgroundX1 = backgroundX2 + backgroundSprite2.getWidth();
         }

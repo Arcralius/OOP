@@ -36,8 +36,10 @@ public class MainMenuScreen extends BaseScreen {
         this.sceneController = sceneController;
         this.audioManager = audioManager;
 
-        // Load and start music
-        this.audioManager.playMusic("main_menu_music", true);
+        if (!"main_menu_music".equals(this.audioManager.getCurrentTrack())) {
+            this.audioManager.playMusic("main_menu_music", true);
+        }
+
     }
 
 

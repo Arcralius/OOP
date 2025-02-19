@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -23,7 +24,10 @@ public class PauseScreen extends BaseScreen {
     private final GameplayScreen gameplayScreen;
     private final AudioManager audioManager;
     private TextButton buttonToggleMute;
-
+    private TextButton buttonVolumeUp;
+    private TextButton buttonVolumeDown;
+    private Label volumeLabel;
+    private float volumeStep = 0.1f;
 
     private Texture backgroundTexture;
     private Sprite backgroundSprite;
@@ -60,19 +64,42 @@ public class PauseScreen extends BaseScreen {
         textButtonStyle.over = skin.getDrawable("menacing2");
         textButtonStyle.font = whiteFont;
 
-        // Resume Button
+        volumeLabel = new Label(getVolumeText(), new Label.LabelStyle(whiteFont, null));
+
         TextButton buttonResume = new TextButton("Resume Game", textButtonStyle);
         buttonResume.pad(20, 50, 20, 50);
         buttonResume.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                System.out.println("Resuming Game...");
-                gameplayScreen.setPaused(false);  //unpause the game
+                gameplayScreen.setPaused(false);
                 sceneController.changeScreen(gameplayScreen);
             }
         });
 
-        // Mute/Unmute Button
+        buttonVolumeUp = new TextButton("Volume Up", textButtonStyle);
+        buttonVolumeUp.pad(20);
+        buttonVolumeUp.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                float currentVolume = audioManager.getVolume();
+                float newVolume = Math.min(1.0f, currentVolume + volumeStep);
+                audioManager.setVolume(newVolume);
+                updateVolumeLabel();
+            }
+        });
+
+        buttonVolumeDown = new TextButton("Volume Down", textButtonStyle);
+        buttonVolumeDown.pad(20);
+        buttonVolumeDown.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                float currentVolume = audioManager.getVolume();
+                float newVolume = Math.max(0.0f, currentVolume - volumeStep);
+                audioManager.setVolume(newVolume);
+                updateVolumeLabel();
+            }
+        });
+
         buttonToggleMute = new TextButton(audioManager.isMuted() ? "Unmute Audio" : "Mute Audio", textButtonStyle);
         buttonToggleMute.pad(20, 50, 20, 50);
         buttonToggleMute.addListener(new ClickListener() {
@@ -82,7 +109,6 @@ public class PauseScreen extends BaseScreen {
             }
         });
 
-        // Quit Button
         TextButton buttonQuit = new TextButton("Quit", textButtonStyle);
         buttonQuit.pad(20, 50, 20, 50);
         buttonQuit.addListener(new ClickListener() {
@@ -92,12 +118,33 @@ public class PauseScreen extends BaseScreen {
             }
         });
 
-        table.row().pad(20);
-        table.add(buttonResume).fillX().uniformX();
-        table.row().pad(20);
-        table.add(buttonToggleMute).fillX().uniformX();
-        table.row().pad(20);
-        table.add(buttonQuit).fillX().uniformX();
+        Table volumeLabelTable = new Table(); // A table just for the label
+        volumeLabelTable.add(volumeLabel).center(); // Center the label
+
+        // Volume Row (Centered with Volume Up/Down on sides)
+        Table volumeRow = new Table();
+        volumeRow.add(buttonVolumeDown).padRight(20); // Volume Down on left
+        volumeRow.add(buttonVolumeUp).padLeft(20); // Volume Up on right
+
+        // Center Row (Resume, Mute)
+        Table centerRow = new Table();
+        centerRow.add(buttonResume).fillX().uniformX();
+        centerRow.row().padTop(20); // Add some space
+        centerRow.add(buttonToggleMute).fillX().uniformX();
+
+        // Quit Row (Centered)
+        Table quitRow = new Table();
+        quitRow.add(buttonQuit).fillX().uniformX();
+
+
+        // Main Table Layout
+        table.add(centerRow).center().padTop(20); // Center Row in the center
+        table.row().padTop(20);
+        table.add(volumeLabelTable).center().padTop(20); // Label above, centered
+        table.row().padTop(10); // Spacing between label and controls
+        table.add(volumeRow).center(); // Volume controls row below, centered
+        table.row().padTop(20);
+        table.add(quitRow).center().padBottom(20); // Quit Row in the center
 
         stage.addActor(table);
     }
@@ -105,7 +152,17 @@ public class PauseScreen extends BaseScreen {
     private void toggleAudio() {
         audioManager.toggleMute();
         buttonToggleMute.setText(audioManager.isMuted() ? "Unmute Audio" : "Mute Audio");
+        updateVolumeLabel();
     }
+
+    private void updateVolumeLabel() {
+        volumeLabel.setText(getVolumeText());
+    }
+
+    private String getVolumeText() {
+        return "Volume: " + (audioManager.isMuted() ? "Muted" : String.format("%.1f", audioManager.getVolume()));
+    }
+
     @Override
     protected void update(float delta) {
         stage.act(delta);
@@ -117,7 +174,6 @@ public class PauseScreen extends BaseScreen {
         backgroundSprite.setPosition(0, 0);
         backgroundSprite.draw(batch);
         batch.end();
-
         stage.draw();
     }
 
