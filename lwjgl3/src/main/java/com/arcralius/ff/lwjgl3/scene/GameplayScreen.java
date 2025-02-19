@@ -6,7 +6,7 @@ import com.arcralius.ff.lwjgl3.entity.NonPlayableEntity;
 import com.arcralius.ff.lwjgl3.entity.EntityController;
 import com.arcralius.ff.lwjgl3.collision.CollisionController;
 import com.arcralius.ff.lwjgl3.input_output.AudioManager;
-import com.badlogic.gdx.Audio;
+import com.arcralius.ff.lwjgl3.input_output.IO_Controller;
 import com.badlogic.gdx.Gdx;
 import com.arcralius.ff.lwjgl3.movement.MovementController;
 import com.badlogic.gdx.Input;
@@ -18,12 +18,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.utils.compression.lzma.Base;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import java.util.ArrayList;
 import java.util.List;
 
 public class GameplayScreen extends BaseScreen {
+    private final IO_Controller ioController;
     private final TiledMap map;
     private final OrthogonalTiledMapRenderer mapRenderer;
     private final Texture backgroundTexture;
@@ -31,24 +31,23 @@ public class GameplayScreen extends BaseScreen {
     private final MovementController movementController;
     private final SceneController sceneController;
     private final AudioManager audioManager;
-
-
     private final PlayableEntity playableEntity;
 
     // Create the EntityController and List for managing entities
     private final List<BaseEntity> entityList;
     private final EntityController entityController;
     private final CollisionController collisionController;
-
     private BitmapFont font; // Font for displaying text
     private String collisionMessage = ""; // Stores collision message
     private float collisionTimer = 0; // Timer to make message disappear
 
-    public GameplayScreen(SceneController sceneController, MovementController movementController, AudioManager audioManager) {
+    public GameplayScreen(IO_Controller ioController, SceneController sceneController, MovementController movementController, AudioManager audioManager) {
+        this.ioController = ioController;
         this.sceneController = sceneController;
         this.movementController = movementController;
         this.audioManager = audioManager;
-        this.collisionController = new CollisionController(this, this.sceneController, this.audioManager);
+        this.collisionController = new CollisionController(ioController, this, this.sceneController, this.audioManager);
+
         // Load and start music
         audioManager.stopMusic("main_menu_music");
         this.audioManager.playMusic("gameplay_music", true);
@@ -98,13 +97,12 @@ public class GameplayScreen extends BaseScreen {
     }
 
     private void handleInput() {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+        if (ioController.getInputManager().isKeyJustReleased(Input.Keys.ESCAPE)) {
             System.out.println("ESC pressed! Switching to PauseScreen...");
-            isPaused = true; //Ensures update() stops running
+            isPaused = true; // Ensures update() stops running
             sceneController.changeScreen(new PauseScreen(sceneController, this, audioManager));
         }
     }
-
 
     @Override
     protected void update(float delta) {

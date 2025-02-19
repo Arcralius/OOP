@@ -1,26 +1,26 @@
 package com.arcralius.ff.lwjgl3.scene;
 
 import com.arcralius.ff.lwjgl3.input_output.AudioManager;
+import com.arcralius.ff.lwjgl3.input_output.IO_Controller;
 import com.arcralius.ff.lwjgl3.movement.MovementController;
-import com.badlogic.gdx.Audio;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 
 public class EndScreen extends com.arcralius.ff.lwjgl3.scene.BaseScreen {
+    private final IO_Controller ioController;
     private final SceneController sceneController;
-    private final Texture background; // Set to final since it's initialized once
+    private final Texture background; // Set to final since it’s initialized once
     private final BitmapFont font;
-
     private final AudioManager audioManager;
 
-    public EndScreen(SceneController sceneController, AudioManager audioManager) {
+    public EndScreen(IO_Controller ioController, SceneController sceneController, AudioManager audioManager) {
+        this.ioController = ioController;
         this.sceneController = sceneController;
         this.audioManager = audioManager;
         this.audioManager.stopMusic("gameplay_music");
         this.audioManager.playMusic("gameover_music", true);
-        //this.background = new Texture("end_background.png"); // Ensure the file exists in the assets folder
         this.background = new Texture("menuBackground.png");
         this.font = new BitmapFont(); // Customize font as needed
     }
@@ -47,10 +47,10 @@ public class EndScreen extends com.arcralius.ff.lwjgl3.scene.BaseScreen {
     }
 
     private void handleInput() {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
-            sceneController.changeScreen(new GameplayScreen(sceneController, new MovementController(camera), audioManager));
+        if (ioController.getInputManager().isKeyJustReleased(Input.Keys.R)) {
+            sceneController.changeScreen(new GameplayScreen(ioController, sceneController, new MovementController(ioController, camera), audioManager));
         }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+        if (ioController.getInputManager().isKeyJustReleased(Input.Keys.ESCAPE)) {
             Gdx.app.exit();
         }
     }
