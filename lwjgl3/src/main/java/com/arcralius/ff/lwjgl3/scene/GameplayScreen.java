@@ -132,36 +132,37 @@ public class GameplayScreen extends BaseScreen {
         }
     }
 
-
+    @Override
     protected void draw() {
-//        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-//        batch.begin();
-//
-//        // Draw the background
-//        backgroundSprite.draw(batch);
-//
-//        batch.end();
-//
-//        // Render the map
-//        mapRenderer.setView(camera);
-//        mapRenderer.render();
-//
-//        // Draw all entities (including player and enemies) using the entityController
-//        entityController.draw(batch);
-//
-//        // Draw collision message at the player’s position
-//        if (!collisionMessage.isEmpty()) {
-//            batch.begin();
-//            font.draw(batch, collisionMessage, playableEntity.getX(), playableEntity.getY() + 50);
-//            batch.end();
-//        }
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        batch.begin();
+
+        // Draw the background
+        backgroundSprite.draw(batch);
+
+        batch.end();
+
+        // Render the map
+        mapRenderer.setView(camera);
+        mapRenderer.render();
+
+        // Draw all entities (including player and enemies) using the entityController
+        entityController.draw(batch);
+
+        // Draw collision message at the player’s position
+        if (!collisionMessage.isEmpty()) {
+            batch.begin();
+            font.draw(batch, collisionMessage, playableEntity.getX(), playableEntity.getY() + 50);
+            batch.end();
+        }
     }
 
+    @Override
     public void dispose() {
-//        super.dispose();
-//        map.dispose();
-//        mapRenderer.dispose();
-//        backgroundTexture.dispose();
-//        font.dispose();
+        super.dispose();
+        map.dispose();
+        mapRenderer.dispose();
+        backgroundTexture.dispose();
+        font.dispose();
     }
 }
