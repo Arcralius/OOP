@@ -108,6 +108,7 @@ public class GameplayScreen extends BaseScreen {
     protected void update(float delta) {
         if (isPaused) return; // Stops updates when paused
         movementController.handleMovement(playableEntity, delta); // Call movement
+        ioController.update();
         handleInput();
 
         collisionController.checkCollisions(playableEntity, entityList);

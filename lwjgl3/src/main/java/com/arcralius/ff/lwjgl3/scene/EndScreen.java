@@ -37,6 +37,7 @@ public class EndScreen extends com.arcralius.ff.lwjgl3.scene.BaseScreen {
     @Override
     protected void update(float delta) {
         handleInput(); // Handle user input during the game loop
+        ioController.update();
     }
 
     @Override
