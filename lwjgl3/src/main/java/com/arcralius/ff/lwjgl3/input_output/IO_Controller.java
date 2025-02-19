@@ -12,19 +12,10 @@ public class IO_Controller {
     }
 
     public void update() {
-        inputManager.pollInput();
-        displayManager.renderFrame();
+        inputManager.update();
     }
 
     public InputManager getInputManager() {
         return inputManager;
-    }
-
-    public DisplayManager getDisplayManager() {
-        return displayManager;
-    }
-
-    public AudioManager getAudioManager() {
-        return audioManager;
     }
 }

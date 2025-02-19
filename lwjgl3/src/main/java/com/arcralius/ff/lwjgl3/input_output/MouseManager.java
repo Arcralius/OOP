@@ -5,42 +5,28 @@ import com.badlogic.gdx.Input;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MouseManager extends InputManager {
-    private float mouseX, mouseY;
+public class MouseManager {
     private Map<Integer, Boolean> mouseButtonStates;
 
     public MouseManager() {
-        super();
-        mouseX = 0;
-        mouseY = 0;
         mouseButtonStates = new HashMap<>();
     }
 
-    @Override
-    public void pollInput() {
-        // Update mouse position
-        mouseX = Gdx.input.getX();
-        mouseY = Gdx.graphics.getHeight() - Gdx.input.getY(); // Convert to game coordinates
-
-        // Update mouse button states
-        mouseButtonStates.put(Input.Buttons.LEFT, Gdx.input.isButtonPressed(Input.Buttons.LEFT));
-        mouseButtonStates.put(Input.Buttons.RIGHT, Gdx.input.isButtonPressed(Input.Buttons.RIGHT));
-        mouseButtonStates.put(Input.Buttons.MIDDLE, Gdx.input.isButtonPressed(Input.Buttons.MIDDLE));
+    public void update() {
+        for (int button = 0; button < 5; button++) {
+            mouseButtonStates.put(button, Gdx.input.isButtonPressed(button));
+        }
     }
 
     public boolean isMouseButtonPressed(int button) {
         return mouseButtonStates.getOrDefault(button, false);
     }
 
-    public boolean isMouseButtonReleased(int button) {
-        return !isMouseButtonPressed(button);
-    }
-
     public float getMouseX() {
-        return mouseX;
+        return Gdx.input.getX();
     }
 
     public float getMouseY() {
-        return mouseY;
+        return Gdx.input.getY();
     }
 }
