@@ -1,5 +1,6 @@
 package com.arcralius.ff.lwjgl3.scene;
 
+import com.arcralius.ff.lwjgl3.examples.Gameplay_example;
 import com.arcralius.ff.lwjgl3.input_output.AudioManager;
 import com.arcralius.ff.lwjgl3.input_output.IO_Controller;
 import com.arcralius.ff.lwjgl3.movement.MovementController;
@@ -49,7 +50,7 @@ public class EndScreen extends com.arcralius.ff.lwjgl3.scene.BaseScreen {
 
     private void handleInput() {
         if (ioController.getInputManager().isKeyJustReleased(Input.Keys.R)) {
-            sceneController.changeScreen(new GameplayScreen(ioController, sceneController, new MovementController(ioController, camera), audioManager));
+            sceneController.changeScreen(new Gameplay_example(ioController, sceneController, new MovementController(ioController, camera), audioManager));
         }
         if (ioController.getInputManager().isKeyJustReleased(Input.Keys.ESCAPE)) {
             Gdx.app.exit();

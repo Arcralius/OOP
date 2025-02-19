@@ -1,5 +1,6 @@
 package com.arcralius.ff.lwjgl3.scene;
 
+import com.arcralius.ff.lwjgl3.examples.Gameplay_example;
 import com.arcralius.ff.lwjgl3.input_output.AudioManager;
 import com.arcralius.ff.lwjgl3.input_output.IO_Controller;
 import com.arcralius.ff.lwjgl3.movement.MovementController;
@@ -83,7 +84,7 @@ public class MainMenuScreen extends BaseScreen {
         buttonPlay.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y){
-                sceneController.changeScreen(new GameplayScreen(ioController, sceneController, new MovementController(ioController, camera), audioManager));
+                sceneController.changeScreen(new Gameplay_example(ioController, sceneController, new MovementController(ioController, camera), audioManager));
             }
         });
 
