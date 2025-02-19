@@ -20,9 +20,9 @@ public class EndScreen extends com.arcralius.ff.lwjgl3.scene.BaseScreen {
         this.audioManager = audioManager;
         this.audioManager.stopMusic("gameplay_music");
         this.audioManager.playMusic("gameover_music", true);
-        //this.background = new Texture("end_background.png"); // Ensure the file exists in the assets folder
         this.background = new Texture("menuBackground.png");
         this.font = new BitmapFont(); // Customize font as needed
+        this.font.getData().setScale(2.0f); // Increase font size
     }
 
     @Override
@@ -42,8 +42,8 @@ public class EndScreen extends com.arcralius.ff.lwjgl3.scene.BaseScreen {
     @Override
     protected void draw() {
         batch.draw(background, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
-        font.draw(batch, "Game Over", viewport.getWorldWidth() / 2 - 50, viewport.getWorldHeight() / 2);
-        font.draw(batch, "Press ESC to Exit or R to Restart", viewport.getWorldWidth() / 2 - 100, viewport.getWorldHeight() / 2 - 30);
+        font.draw(batch, "Game Over", viewport.getWorldWidth() / 2 - 80, viewport.getWorldHeight() / 2 + 80);
+        font.draw(batch, "Press ESC to Exit or R to Restart", viewport.getWorldWidth() / 2 - 200, viewport.getWorldHeight() / 2 + 30);
     }
 
     private void handleInput() {
