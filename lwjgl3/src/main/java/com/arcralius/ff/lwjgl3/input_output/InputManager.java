@@ -1,49 +1,24 @@
 package com.arcralius.ff.lwjgl3.input_output;
-import java.util.HashMap;
-import java.util.Map;
 
 public class InputManager {
-    private Map<String, Boolean> keyStates;
-    private Map<String, Boolean> mouseButtonStates;
-    private float mouseX, mouseY;
+    private KeyboardManager keyboardManager;
+    private MouseManager mouseManager;
 
     public InputManager() {
-        keyStates = new HashMap<>();
-        mouseButtonStates = new HashMap<>();
-        mouseX = 0;
-        mouseY = 0;
+        this.keyboardManager = new KeyboardManager();
+        this.mouseManager = new MouseManager();
     }
 
     public void pollInput() {
-        System.out.println("Polling input...");
+        keyboardManager.pollInput();
+        mouseManager.pollInput();
     }
 
-    public boolean isKeyPressed(String key) {
-        return keyStates.getOrDefault(key, false);
+    public KeyboardManager getKeyboardManager() {
+        return keyboardManager;
     }
 
-    public boolean isKeyReleased(String key) {
-        return !isKeyPressed(key);
-    }
-
-    public boolean isMouseButtonPressed(String button) {
-        return mouseButtonStates.getOrDefault(button, false);
-    }
-
-    public boolean isMouseButtonReleased(String button) {
-        return !isMouseButtonPressed(button);
-    }
-
-    public float getMouseX() {
-        return mouseX;
-    }
-
-    public float getMouseY() {
-        return mouseY;
-    }
-
-    public void resetInputs() {
-        keyStates.clear();
-        mouseButtonStates.clear();
+    public MouseManager getMouseManager() {
+        return mouseManager;
     }
 }
