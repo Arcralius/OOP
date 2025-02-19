@@ -16,7 +16,12 @@ public class AudioManager {
         this.musicTracks = new HashMap<>();
     }
 
-    public void loadMusic(String trackName, String filePath) {
+    public void loadAllMusic(){
+        loadMusic("gameplay_music","music/game_music.mp3");
+        loadMusic("main_menu_music","music/main_menu.mp3");
+        loadMusic("gameover_music","music/game_over.mp3");
+    }
+    private void loadMusic(String trackName, String filePath) {
         //FileHandle musicFile = Gdx.files.internal("music/game_music.mp3");
 
         FileHandle musicFile = Gdx.files.internal(filePath);

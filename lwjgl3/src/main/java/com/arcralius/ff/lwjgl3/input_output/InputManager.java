@@ -1,49 +1,41 @@
 package com.arcralius.ff.lwjgl3.input_output;
-import java.util.HashMap;
-import java.util.Map;
 
 public class InputManager {
-    private Map<String, Boolean> keyStates;
-    private Map<String, Boolean> mouseButtonStates;
-    private float mouseX, mouseY;
+    private final KeyboardManager keyboardManager;
+    private final MouseManager mouseManager;
 
     public InputManager() {
-        keyStates = new HashMap<>();
-        mouseButtonStates = new HashMap<>();
-        mouseX = 0;
-        mouseY = 0;
+        this.keyboardManager = new KeyboardManager();
+        this.mouseManager = new MouseManager();
     }
 
-    public void pollInput() {
-        System.out.println("Polling input...");
+    // Update method to refresh input states
+    public void update() {
+        keyboardManager.update();
+        mouseManager.update();
     }
 
-    public boolean isKeyPressed(String key) {
-        return keyStates.getOrDefault(key, false);
+    // Check if a specific key is currently pressed
+    public boolean isKeyPressed(int key) {
+        return keyboardManager.isKeyPressed(key);
     }
 
-    public boolean isKeyReleased(String key) {
-        return !isKeyPressed(key);
+    // Check if a specific key was just released
+    public boolean isKeyJustReleased(int key) {
+        return keyboardManager.isKeyJustReleased(key);
     }
 
-    public boolean isMouseButtonPressed(String button) {
-        return mouseButtonStates.getOrDefault(button, false);
+    // Check if a mouse button is pressed
+    public boolean isMouseButtonPressed(int button) {
+        return mouseManager.isMouseButtonPressed(button);
     }
 
-    public boolean isMouseButtonReleased(String button) {
-        return !isMouseButtonPressed(button);
-    }
-
+    // Get mouse position
     public float getMouseX() {
-        return mouseX;
+        return mouseManager.getMouseX();
     }
 
     public float getMouseY() {
-        return mouseY;
-    }
-
-    public void resetInputs() {
-        keyStates.clear();
-        mouseButtonStates.clear();
+        return mouseManager.getMouseY();
     }
 }
