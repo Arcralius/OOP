@@ -1,26 +1,39 @@
 package com.arcralius.ff.lwjgl3.input_output;
 
-public class MouseManager extends InputManager{
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import java.util.HashMap;
+import java.util.Map;
+
+public class MouseManager extends InputManager {
     private float mouseX, mouseY;
+    private Map<Integer, Boolean> mouseButtonStates;
 
     public MouseManager() {
         super();
         mouseX = 0;
         mouseY = 0;
+        mouseButtonStates = new HashMap<>();
     }
 
     @Override
     public void pollInput() {
-        // Simulated mouse polling (replace with actual implementation)
-        System.out.println("Polling mouse...");
+        // Update mouse position
+        mouseX = Gdx.input.getX();
+        mouseY = Gdx.graphics.getHeight() - Gdx.input.getY(); // Convert to game coordinates
+
+        // Update mouse button states
+        mouseButtonStates.put(Input.Buttons.LEFT, Gdx.input.isButtonPressed(Input.Buttons.LEFT));
+        mouseButtonStates.put(Input.Buttons.RIGHT, Gdx.input.isButtonPressed(Input.Buttons.RIGHT));
+        mouseButtonStates.put(Input.Buttons.MIDDLE, Gdx.input.isButtonPressed(Input.Buttons.MIDDLE));
     }
 
-    public boolean isMouseButtonPressed(String button) {
-        return true;
+    public boolean isMouseButtonPressed(int button) {
+        return mouseButtonStates.getOrDefault(button, false);
     }
 
-    public boolean isMouseButtonReleased(String button) {
-        return true;
+    public boolean isMouseButtonReleased(int button) {
+        return !isMouseButtonPressed(button);
     }
 
     public float getMouseX() {
@@ -29,10 +42,5 @@ public class MouseManager extends InputManager{
 
     public float getMouseY() {
         return mouseY;
-    }
-
-    public void updateMousePosition(float x, float y) {
-        this.mouseX = x;
-        this.mouseY = y;
     }
 }
