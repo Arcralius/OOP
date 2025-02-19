@@ -33,6 +33,9 @@ public class MainMenuScreen extends BaseScreen {
         this.ioController = ioController;
         this.sceneController = sceneController;
 
+        // Update DisplayManager with the current screen
+        this.ioController.getDisplayManager().setCurrentScreen("MainMenuScreen");
+
         // Ensure the correct music is playing
         if (!"main_menu_music".equals(this.ioController.getAudioManager().getCurrentTrack())) {
             this.ioController.getAudioManager().playMusic("main_menu_music", true);
@@ -41,6 +44,9 @@ public class MainMenuScreen extends BaseScreen {
 
     @Override
     public void show() {
+        // Update DisplayManager resolution when menu is loaded
+        ioController.getDisplayManager().setResolution(Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight());
+
         // Initialize UI handling
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);

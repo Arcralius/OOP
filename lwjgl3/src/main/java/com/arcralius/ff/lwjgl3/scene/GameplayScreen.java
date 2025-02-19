@@ -46,6 +46,12 @@ public class GameplayScreen extends BaseScreen {
         this.movementController = movementController;
         this.collisionController = new CollisionController(ioController, this, sceneController);
 //
+//        // Update DisplayManager with the current screen
+//        this.ioController.getDisplayManager().setCurrentScreen("GameplayScreen");
+//
+//        // Set display resolution dynamically
+//        this.ioController.getDisplayManager().setResolution(Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight());
+//
 //        // Load and start music
 //        this.ioController.getAudioManager().stopMusic("main_menu_music");
 //        this.ioController.getAudioManager().playMusic("gameplay_music", true);

@@ -13,7 +13,11 @@ public class GameMaster extends Game {
     public void create() {
         // Initialize IO_Controller and SceneController
         ioController = new IO_Controller();
-        sceneController = new SceneController(this);
+        sceneController = new SceneController(this, ioController);
+
+        // Initialize DisplayManager and set resolution
+        ioController.getDisplayManager().initializeDisplay();
+        ioController.getDisplayManager().setResolution("1920x1080");
 
         // Load all audio files via IO_Controller
         ioController.getAudioManager().loadAllMusic();
@@ -25,6 +29,7 @@ public class GameMaster extends Game {
     @Override
     public void render() {
         super.render(); // Use Game's render method
+        ioController.getDisplayManager().renderFrame(); // Debugging display updates
     }
 
     @Override

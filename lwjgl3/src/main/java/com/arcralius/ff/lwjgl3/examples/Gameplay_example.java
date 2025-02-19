@@ -34,6 +34,11 @@ public class Gameplay_example extends GameplayScreen {
     public Gameplay_example(IO_Controller ioController, SceneController sceneController, MovementController movementController) {
         super(ioController, sceneController, movementController);
 
+        // Update DisplayManager with the current screen
+        ioController.getDisplayManager().setCurrentScreen("Gameplay_example");
+
+        // Set display resolution dynamically
+        ioController.getDisplayManager().setResolution(ioController.getDisplayManager().getResolution());
 
         // Load and start music
         ioController.getAudioManager().stopMusic("main_menu_music");

@@ -40,6 +40,12 @@ public class PauseScreen extends BaseScreen {
 
     @Override
     public void show() {
+        // Update DisplayManager with the current screen
+        ioController.getDisplayManager().setCurrentScreen("PauseScreen");
+
+        // Update resolution in case the window was resized
+        ioController.getDisplayManager().setResolution(Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight());
+
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 

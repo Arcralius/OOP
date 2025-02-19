@@ -34,6 +34,12 @@ public class SettingScreen extends BaseScreen {
     public SettingScreen(IO_Controller ioController, SceneController sceneController) {
         this.ioController = ioController;
         this.sceneController = sceneController;
+
+        // Update DisplayManager with the current screen
+        ioController.getDisplayManager().setCurrentScreen("SettingScreen");
+
+        // Set display resolution dynamically
+        ioController.getDisplayManager().setResolution(ioController.getDisplayManager().getResolution());
     }
 
     @Override
@@ -160,7 +166,6 @@ public class SettingScreen extends BaseScreen {
         backgroundSprite1.draw(batch);
         backgroundSprite2.draw(batch);
         batch.end();
-
         stage.draw();
     }
 

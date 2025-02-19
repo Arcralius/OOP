@@ -1,14 +1,16 @@
 package com.arcralius.ff.lwjgl3.input_output;
 
 public class IO_Controller {
-    private InputManager inputManager;
-    private DisplayManager displayManager;
-    private AudioManager audioManager;
+    private final InputManager inputManager;
+    private final DisplayManager displayManager;
+    private final AudioManager audioManager;
 
     public IO_Controller() {
         this.inputManager = new InputManager();
         this.displayManager = new DisplayManager();
         this.audioManager = new AudioManager();
+
+        displayManager.initializeDisplay();
     }
 
     public void update() {
@@ -21,5 +23,9 @@ public class IO_Controller {
 
     public AudioManager getAudioManager() {
         return audioManager;
+    }
+
+    public DisplayManager getDisplayManager() {
+        return displayManager;
     }
 }
