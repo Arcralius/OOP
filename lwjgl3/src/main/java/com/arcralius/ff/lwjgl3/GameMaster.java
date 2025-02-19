@@ -4,11 +4,13 @@ import com.badlogic.gdx.Game;
 import com.arcralius.ff.lwjgl3.scene.SceneController;
 import com.arcralius.ff.lwjgl3.scene.MainMenuScreen;
 import com.arcralius.ff.lwjgl3.input_output.AudioManager;
+import com.arcralius.ff.lwjgl3.input_output.IO_Controller;
 
 
 public class GameMaster extends Game {
     private SceneController sceneController;
     private AudioManager audioManager;
+    private IO_Controller ioController;
 
     @Override
     public void create() {
@@ -18,7 +20,7 @@ public class GameMaster extends Game {
         audioManager.loadAllMusic();
 
 
-        sceneController.changeScreen(new MainMenuScreen(sceneController, audioManager));
+        sceneController.changeScreen(new MainMenuScreen(ioController, sceneController, audioManager));
 
 
 

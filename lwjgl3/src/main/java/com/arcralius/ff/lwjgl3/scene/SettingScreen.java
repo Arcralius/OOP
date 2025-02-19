@@ -1,6 +1,7 @@
 package com.arcralius.ff.lwjgl3.scene;
 
 import com.arcralius.ff.lwjgl3.input_output.AudioManager;
+import com.arcralius.ff.lwjgl3.input_output.IO_Controller;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -21,15 +22,17 @@ public class SettingScreen extends BaseScreen {
     private Skin skin;
     private final SceneController sceneController;
     private final AudioManager audioManager;
+    private final IO_Controller ioController;
 
     private Texture backgroundTexture;
     private Sprite backgroundSprite1, backgroundSprite2;
     private float backgroundX1 = 0, backgroundX2;
     private TextButton buttonToggleMute;
 
-    public SettingScreen(SceneController sceneController, AudioManager audioManager) {
+    public SettingScreen(IO_Controller ioController, SceneController sceneController, AudioManager audioManager) {
         this.sceneController = sceneController;
         this.audioManager = audioManager;
+        this.ioController = ioController;
     }
 
     @Override
@@ -82,7 +85,7 @@ public class SettingScreen extends BaseScreen {
         buttonBack.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                sceneController.changeScreen(new MainMenuScreen(sceneController, audioManager));
+                sceneController.changeScreen(new MainMenuScreen(ioController, sceneController, audioManager));
             }
         });
 

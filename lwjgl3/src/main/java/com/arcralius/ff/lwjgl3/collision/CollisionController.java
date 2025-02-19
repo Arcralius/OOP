@@ -5,19 +5,22 @@ import com.arcralius.ff.lwjgl3.entity.NonPlayableEntity;
 import com.arcralius.ff.lwjgl3.scene.GameplayScreen;
 import com.arcralius.ff.lwjgl3.scene.EndScreen;
 import com.arcralius.ff.lwjgl3.scene.SceneController;
-import com.arcralius.ff.lwjgl3.input_output.AudioManager; // Import AudioManager
+import com.arcralius.ff.lwjgl3.input_output.AudioManager;
+import com.arcralius.ff.lwjgl3.input_output.IO_Controller; // Import IO_Controller
 
 import java.util.List;
 
 public class CollisionController implements CollisionInterface {
     private GameplayScreen gameplayScreen;
+    private IO_Controller ioController;
     private SceneController sceneController;
     private AudioManager audioManager; // Add AudioManager field
 
-    public CollisionController(GameplayScreen gameplayScreen, SceneController sceneController, AudioManager audioManager) {
+    public CollisionController(IO_Controller ioController, GameplayScreen gameplayScreen, SceneController sceneController, AudioManager audioManager) {
+        this.ioController = ioController;
         this.gameplayScreen = gameplayScreen;
         this.sceneController = sceneController;
-        this.audioManager = audioManager; // Initialize audioManager
+        this.audioManager = audioManager;
     }
 
     public void checkCollisions(BaseEntity player, List<BaseEntity> entityList) {
@@ -39,7 +42,7 @@ public class CollisionController implements CollisionInterface {
         System.out.println("Entity ID: " + b.getId()); // Debugging
         if ("enemy 3".equals(bString)) {
             System.out.println("Collision with entity 3 detected! Switching to EndScreen...");
-            sceneController.changeScreen(new EndScreen(sceneController, audioManager));
+            sceneController.changeScreen(new EndScreen(ioController, sceneController, audioManager));
         }
     }
 }
