@@ -9,18 +9,17 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.Gdx;
 
 public class EndScreen extends BaseScreen {
-    private final IO_Controller ioController;
     private final SceneController sceneController;
     private final Texture background;
     private final BitmapFont font;
 
     public EndScreen(IO_Controller ioController, SceneController sceneController) {
-        this.ioController = ioController;
+        super(ioController);
         this.sceneController = sceneController;
 
         // Stop gameplay music and play game over music
-        this.ioController.getAudioManager().stopMusic("gameplay_music");
-        this.ioController.getAudioManager().playMusic("gameover_music", true);
+        ioController.getAudioManager().stopMusic("gameplay_music");
+        ioController.getAudioManager().playMusic("gameover_music", true);
 
         // Load assets
         this.background = new Texture("menuBackground.png");

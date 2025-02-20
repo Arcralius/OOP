@@ -21,7 +21,6 @@ public class SettingScreen extends BaseScreen {
     private TextureAtlas atlas;
     private Skin skin;
     private final SceneController sceneController;
-    private final IO_Controller ioController;
     private Texture backgroundTexture;
     private Sprite backgroundSprite1, backgroundSprite2;
     private float backgroundX1 = 0, backgroundX2;
@@ -32,7 +31,7 @@ public class SettingScreen extends BaseScreen {
     private final float volumeStep = 0.1f;
 
     public SettingScreen(IO_Controller ioController, SceneController sceneController) {
-        this.ioController = ioController;
+        super(ioController);
         this.sceneController = sceneController;
 
         // Update DisplayManager with the current screen

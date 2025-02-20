@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameplayScreen extends BaseScreen {
-    private final IO_Controller ioController;
     private final TiledMap map;
     private final OrthogonalTiledMapRenderer mapRenderer;
     private final Texture backgroundTexture;
@@ -41,7 +40,7 @@ public class GameplayScreen extends BaseScreen {
     protected boolean isPaused = false; // Tracks whether the game is paused
 
     public GameplayScreen(IO_Controller ioController, SceneController sceneController, MovementController movementController) {
-        this.ioController = ioController;
+        super(ioController);
         this.sceneController = sceneController;
         this.movementController = movementController;
         this.collisionController = new CollisionController(ioController, this, sceneController);

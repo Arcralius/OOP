@@ -22,7 +22,6 @@ public class MainMenuScreen extends BaseScreen {
     private TextureAtlas atlas;
     private Skin skin;
     private final SceneController sceneController;
-    private final IO_Controller ioController;
 
     // Background scrolling
     private Texture backgroundTexture;
@@ -30,15 +29,15 @@ public class MainMenuScreen extends BaseScreen {
     private float backgroundX1 = 0, backgroundX2;
 
     public MainMenuScreen(IO_Controller ioController, SceneController sceneController) {
-        this.ioController = ioController;
+        super(ioController);
         this.sceneController = sceneController;
 
         // Update DisplayManager with the current screen
-        this.ioController.getDisplayManager().setCurrentScreen("MainMenuScreen");
+        ioController.getDisplayManager().setCurrentScreen("MainMenuScreen");
 
         // Ensure the correct music is playing
-        if (!"main_menu_music".equals(this.ioController.getAudioManager().getCurrentTrack())) {
-            this.ioController.getAudioManager().playMusic("main_menu_music", true);
+        if (!"main_menu_music".equals(ioController.getAudioManager().getCurrentTrack())) {
+            ioController.getAudioManager().playMusic("main_menu_music", true);
         }
     }
 

@@ -22,7 +22,6 @@ public class PauseScreen extends BaseScreen {
     private Skin skin;
     private final SceneController sceneController;
     private final GameplayScreen gameplayScreen;
-    private final IO_Controller ioController;
     private TextButton buttonToggleMute;
     private TextButton buttonVolumeUp;
     private TextButton buttonVolumeDown;
@@ -33,7 +32,7 @@ public class PauseScreen extends BaseScreen {
     private Sprite backgroundSprite;
 
     public PauseScreen(IO_Controller ioController, SceneController sceneController, GameplayScreen gameplayScreen) {
-        this.ioController = ioController;
+        super(ioController);
         this.sceneController = sceneController;
         this.gameplayScreen = gameplayScreen;
     }

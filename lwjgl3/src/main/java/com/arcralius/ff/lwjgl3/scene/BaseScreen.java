@@ -1,5 +1,6 @@
 package com.arcralius.ff.lwjgl3.scene;
 
+import com.arcralius.ff.lwjgl3.input_output.IO_Controller;
 import com.arcralius.ff.lwjgl3.movement.MovementController;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
@@ -11,6 +12,8 @@ import java.util.List;
 
 //abstract class used as base screen cannot be instantiated directly, it will be extended
 public abstract class BaseScreen implements Screen {
+    protected final IO_Controller ioController;
+
     // 🔹 Private attributes for encapsulation
     private Texture background; //store screen bg image
     private List<String> menuOptions; //store the list of menu options
@@ -20,7 +23,8 @@ public abstract class BaseScreen implements Screen {
     protected Viewport viewport;
     protected SpriteBatch batch;
 
-    public BaseScreen() {
+    public BaseScreen(IO_Controller ioController) {
+        this.ioController = ioController;
         camera = new OrthographicCamera();
         viewport = new FitViewport(800, 600, camera);
         batch = new SpriteBatch();
