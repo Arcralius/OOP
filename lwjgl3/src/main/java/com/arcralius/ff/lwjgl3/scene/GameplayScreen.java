@@ -45,15 +45,7 @@ public class GameplayScreen extends BaseScreen {
         this.movementController = movementController;
         this.collisionController = new CollisionController(ioController, this, sceneController);
 //
-//        // Update DisplayManager with the current screen
-//        this.ioController.getDisplayManager().setCurrentScreen("GameplayScreen");
 //
-//        // Set display resolution dynamically
-//        this.ioController.getDisplayManager().setResolution(Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight());
-//
-//        // Load and start music
-//        this.ioController.getAudioManager().stopMusic("main_menu_music");
-//        this.ioController.getAudioManager().playMusic("gameplay_music", true);
 //
         // Initialize entity list and controller
         entityList = new ArrayList<>();
@@ -72,13 +64,7 @@ public class GameplayScreen extends BaseScreen {
 //        // Add the playable entity to the entity controller
         entityController.addEntity(playableEntity);
 //
-//        // Create an enemy (NonPlayableEntity) and add it to the entity controller
-//        NonPlayableEntity enemy1 = new NonPlayableEntity("droplet.png", 300, 300, "enemy 1", 100, 32, 32);
-//        NonPlayableEntity enemy2 = new NonPlayableEntity("droplet.png", 200, 100, "enemy 2", 200, 32, 32);
-//        NonPlayableEntity enemy3 = new NonPlayableEntity("droplet.png", 300, 200, "enemy 3", 300, 32, 32);
-//        entityController.addEntity(enemy1);
-//        entityController.addEntity(enemy2);
-//        entityController.addEntity(enemy3);
+//
 //
 //        // Initialize font
         font = new BitmapFont();
@@ -121,17 +107,11 @@ public class GameplayScreen extends BaseScreen {
             }
         }
 //
-//        camera.zoom = 0.60f; // Zoom in (adjust as needed)
+        camera.zoom = 0.60f; // Zoom in (adjust as needed)
             camera.position.set(playableEntity.getX(), playableEntity.getY(), 0); // Camera follows the player
             camera.update();
 //
-//        // Reduce collision message display time
-//        if (collisionTimer > 0) {
-//            collisionTimer -= delta;
-//            if (collisionTimer <= 0) {
-//                collisionMessage = ""; // Remove message after time is up
-//            }
-//        }
+//
         }
 
 
