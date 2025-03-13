@@ -1,9 +1,6 @@
 package com.arcralius.ff.lwjgl3.scene;
 
-import com.arcralius.ff.lwjgl3.entity.BaseEntity;
-import com.arcralius.ff.lwjgl3.entity.PlayableEntity;
-import com.arcralius.ff.lwjgl3.entity.NonPlayableEntity;
-import com.arcralius.ff.lwjgl3.entity.EntityController;
+import com.arcralius.ff.lwjgl3.entity.*;
 import com.arcralius.ff.lwjgl3.collision.CollisionController;
 import com.arcralius.ff.lwjgl3.input_output.IO_Controller;
 import com.badlogic.gdx.Gdx;
@@ -28,7 +25,7 @@ public class GameplayScreen extends BaseScreen {
     private final Sprite backgroundSprite;
     private final MovementController movementController;
     private final SceneController sceneController;
-    private final PlayableEntity playableEntity;
+    // final PlayableEntity playableEntity;
 
     // Create the EntityController and List for managing entities
     private final List<BaseEntity> entityList;
@@ -38,6 +35,7 @@ public class GameplayScreen extends BaseScreen {
     private String collisionMessage = ""; // Stores collision message
     private float collisionTimer = 0; // Timer to make message disappear
     protected boolean isPaused = false; // Tracks whether the game is paused
+    private BaseEntity playableEntity; // Store the playable entity
 
     public GameplayScreen(IO_Controller ioController, SceneController sceneController, MovementController movementController) {
         super(ioController);
@@ -47,9 +45,11 @@ public class GameplayScreen extends BaseScreen {
 //
 //
 //
-        // Initialize entity list and controller
+        // Initialize entity list and controller and entity Factory
         entityList = new ArrayList<>();
-        entityController = new EntityController(entityList);
+        IEntityFactory entityFactory = new ConcreteEntityFactory(); // Create a factory
+
+        entityController = new EntityController(entityList, entityFactory);
 //
 //        // Load map and textures
         this.map = new TmxMapLoader().load("background.tmx");
@@ -59,17 +59,17 @@ public class GameplayScreen extends BaseScreen {
         backgroundSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 //
 //        // Initialize the playable entity
-        playableEntity = new PlayableEntity("bucket.png", 100, 100, "player", 1000, 20, 20);
-//
+        //playableEntity = new PlayableEntity("bucket.png", 100, 100, "player", 1000, 20, 20);
 //        // Add the playable entity to the entity controller
-        entityController.addEntity(playableEntity);
-//
-//
-//
+
+        entityController.addEntity("Playable", "bucket.png", 100, 100, "player", 1000, 20, 20);
+        this. playableEntity = entityController.getEntityById("player");
+
 //        // Initialize font
         font = new BitmapFont();
     }
-
+    //
+//
 
 
     public boolean isPaused() {
