@@ -10,4 +10,9 @@ public class ConcreteEntityFactory implements IEntityFactory {
     public NonPlayableEntity createNonPlayableEntity(String texturePath, float x, float y, String id, float speed, float width, float height) {
         return new NonPlayableEntity(texturePath, x, y, id, speed, width, height);
     }
+
+    @Override
+    public FoodEntity createFoodEntity(String texturePath, float x, float y, String id, float width, float height, String foodType, String nutritionalInfo) {
+        return new FoodEntity(texturePath, x, y, id, width, height, foodType, nutritionalInfo);
+    }
 }

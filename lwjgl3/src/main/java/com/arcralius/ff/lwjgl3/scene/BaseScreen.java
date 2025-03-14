@@ -1,23 +1,25 @@
 package com.arcralius.ff.lwjgl3.scene;
 
 import com.arcralius.ff.lwjgl3.input_output.IO_Controller;
-import com.arcralius.ff.lwjgl3.movement.MovementController;
+import com.arcralius.ff.lwjgl3.scene.component.ScreenComponent;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+
+import java.util.ArrayList;
 import java.util.List;
 
-//abstract class used as base screen cannot be instantiated directly, it will be extended
 public abstract class BaseScreen implements Screen {
     protected final IO_Controller ioController;
+    protected final List<ScreenComponent> components = new ArrayList<>();
 
-    // 🔹 Private attributes for encapsulation
-    private Texture background; //store screen bg image
-    private List<String> menuOptions; //store the list of menu options
-    private int selectedOption; //track which menu option is selected
+    // Existing fields
+    private Texture background;
+    private List<String> menuOptions;
+    private int selectedOption;
     private float deltaTime;
     protected OrthographicCamera camera;
     protected Viewport viewport;
@@ -30,6 +32,11 @@ public abstract class BaseScreen implements Screen {
         batch = new SpriteBatch();
     }
 
+    public void addComponent(ScreenComponent component) {
+        components.add(component);
+        component.initialize(this);
+    }
+
     public OrthographicCamera getCamera() {
         return camera;
     }
@@ -38,8 +45,7 @@ public abstract class BaseScreen implements Screen {
         return viewport;
     }
 
-
-    // 🔹 Getters and Setters (Encapsulated Fields)
+    // Existing getters and setters
     public Texture getBackground() {
         return background;
     }
@@ -68,19 +74,32 @@ public abstract class BaseScreen implements Screen {
         return deltaTime;
     }
 
-    //render the screen
-    protected abstract void update(float delta);
-    protected abstract void draw();
-
     @Override
     public void render(float delta) {
         this.deltaTime = delta;
-        update(delta); //update game logic before rendering
-        camera.update();
 
+        for (ScreenComponent component : components) {
+            component.update(delta);
+        }
+        update(delta);
+
+        camera.update();
         batch.setProjectionMatrix(camera.combined);
-        draw(); //each subclass will define what to draw
+
+        // Draw components
+        batch.begin();
+        for (ScreenComponent component : components) {
+            component.render(batch);
+        }
+        batch.end();
+
+        // Draw screen-specific elements
+        draw();
     }
+
+    // Required abstract methods for screen-specific logic
+    protected abstract void update(float delta);
+    protected abstract void draw();
 
     @Override
     public void resize(int width, int height) {
@@ -91,31 +110,32 @@ public abstract class BaseScreen implements Screen {
 
     @Override
     public void dispose() {
+        // Dispose components
+        for (ScreenComponent component : components) {
+            component.dispose();
+        }
+
         if (batch != null) batch.dispose();
         if (background != null) background.dispose();
     }
 
-    //to load assets when screen appears
     @Override
     public void show() {
-
+        // To be implemented by subclasses
     }
 
-    //to pause game state
     @Override
     public void pause() {
-
+        // To be implemented by subclasses
     }
 
-    //to continue from where player left off
     @Override
     public void resume() {
-
+        // To be implemented by subclasses
     }
 
-    //to clean up when switching screens
     @Override
     public void hide() {
-
+        // To be implemented by subclasses
     }
 }

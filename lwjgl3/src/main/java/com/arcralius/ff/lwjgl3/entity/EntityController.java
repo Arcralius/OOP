@@ -1,25 +1,18 @@
 package com.arcralius.ff.lwjgl3.entity;
 
-
 import java.util.List;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-
-
 
 public class EntityController {
     private List<BaseEntity> entityList;
-    private IEntityFactory entityFactory; // Store the Abstract Factory
+    private IEntityFactory entityFactory;
 
-    public EntityController(List<BaseEntity> entityList,IEntityFactory entityFactory) {
-
+    public EntityController(List<BaseEntity> entityList, IEntityFactory entityFactory) {
         this.entityList = entityList;
         this.entityFactory = entityFactory;
-
     }
 
     public void addEntity(String type, String texturePath, float x, float y, String id, float speed, float width, float height) {
-
         BaseEntity entity = null;
         if (type.equalsIgnoreCase("Playable")) {
             entity = entityFactory.createPlayableEntity(texturePath, x, y, id, speed, width, height);
@@ -35,17 +28,30 @@ public class EntityController {
         }
     }
 
+    public FoodEntity addFoodEntity(String texturePath, float x, float y, String id, float width, float height,
+                                    String foodType, String nutritionalInfo) {
+        FoodEntity food = entityFactory.createFoodEntity(texturePath, x, y, id, width, height, foodType, nutritionalInfo);
+
+        if (food != null) {
+            entityList.add(food);
+            System.out.println("Added food: " + id + " (" + foodType + ") at (" + x + ", " + y + ")");
+            return food;
+        } else {
+            System.out.println("Food creation failed");
+            return null;
+        }
+    }
+
     public BaseEntity getEntityById(String id) {
         for (BaseEntity entity : entityList) {
             if (entity.getId().equals(id)) {
-                return entity; // Return the entity if found
+                return entity;
             }
         }
-        return null; // Return null if not found
+        return null;
     }
 
     public void removeEntity(BaseEntity entity) {
-
         entityList.remove(entity);
     }
 
@@ -54,9 +60,8 @@ public class EntityController {
             entity.draw(batch);
         }
     }
+
+    public List<BaseEntity> getEntityList() {
+        return entityList;
+    }
 }
-
-
-
-
-

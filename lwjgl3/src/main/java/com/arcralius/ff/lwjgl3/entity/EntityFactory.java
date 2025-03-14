@@ -9,4 +9,9 @@ public class EntityFactory {
         }
         return null; // Return null if the type is invalid
     }
+
+    public static FoodEntity createFoodEntity(String texturePath, float x, float y, String id,
+                                              float width, float height, String foodType, String nutritionalInfo) {
+        return new FoodEntity(texturePath, x, y, id, width, height, foodType, nutritionalInfo);
+    }
 }
