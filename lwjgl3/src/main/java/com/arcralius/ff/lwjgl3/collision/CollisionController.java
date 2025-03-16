@@ -6,6 +6,7 @@ import com.arcralius.ff.lwjgl3.entity.NonPlayableEntity;
 import com.arcralius.ff.lwjgl3.entity.FoodData;
 import com.arcralius.ff.lwjgl3.scene.GameplayScreen;
 import com.arcralius.ff.lwjgl3.scene.EndScreen;
+import com.arcralius.ff.lwjgl3.scene.VictoryScreen;
 import com.arcralius.ff.lwjgl3.scene.SceneController;
 import com.arcralius.ff.lwjgl3.input_output.IO_Controller;
 
@@ -57,6 +58,10 @@ public class CollisionController implements CollisionInterface {
         if ("enemy 3".equals(bString)) {
             System.out.println("Collision with entity 3 detected! Switching to EndScreen...");
             sceneController.changeScreen(new EndScreen(ioController, sceneController));
+        }
+        if ("enemy 1".equals(bString)) {
+            System.out.println("Collision with entity 3 detected! Switching to EndScreen...");
+            sceneController.changeScreen(new VictoryScreen(ioController, sceneController));
         }
     }
 

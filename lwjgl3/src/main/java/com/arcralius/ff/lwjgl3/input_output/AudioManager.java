@@ -28,6 +28,7 @@ public class AudioManager {
         loadMusic("gameplay_music","music/game_music.mp3");
         loadMusic("main_menu_music","music/main_menu.mp3");
         loadMusic("gameover_music","music/game_over.mp3");
+        loadMusic("victory_music","music/victory.mp3");
 
         // Load the collection sound as a sound effect, not music
         loadSoundEffect("item_collected", "music/item_collected.mp3");
