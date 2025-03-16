@@ -9,7 +9,7 @@ public class FoodInfoDisplay implements ScreenComponent {
     private String foodType;
     private Texture foodImage;
     private float displayTime;
-    private float maxDisplayTime = 5.0f; // Display info for 5 seconds
+    private float maxDisplayTime = 3.0f; // Display info by set time
     private boolean isActive = false;
     private BaseScreen screen;
 
@@ -89,27 +89,22 @@ public class FoodInfoDisplay implements ScreenComponent {
     public void render(SpriteBatch batch) {
         if (isActive && foodImage != null) {
             try {
-                // Check if batch is in drawing state
-                if (!batch.isDrawing()) {
-                    System.err.println("ERROR: Batch is not in drawing state! Cannot render food image.");
-                    return;
-                }
+                // Fixed size for all food card images
+                float fixedWidth = 600;  // Width in pixels
+                float fixedHeight = 160; // Height in pixels
 
-                // Draw the food card image centered on screen
-                float imgX = Gdx.graphics.getWidth()/2f - foodImage.getWidth()/2f;
-                float imgY = Gdx.graphics.getHeight()/2f - foodImage.getHeight()/2f;
+                // Center the image
+                float imgX = Gdx.graphics.getWidth()/2f - fixedWidth/2f;
+                float imgY = Gdx.graphics.getHeight()/2f - fixedHeight/2f;
 
-                System.out.println("Rendering food image at position: " + imgX + "," + imgY +
-                    " (screen size: " + Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight() + ")");
+                // Draw with fixed size
+                batch.draw(foodImage, imgX, imgY, fixedWidth, fixedHeight);
 
-                batch.draw(foodImage, imgX, imgY);
             } catch (Exception e) {
                 System.err.println("Error rendering food info: " + e.getMessage());
                 e.printStackTrace();
                 isActive = false;
             }
-        } else if (isActive) {
-            System.err.println("FoodInfoDisplay is active but foodImage is null!");
         }
     }
 

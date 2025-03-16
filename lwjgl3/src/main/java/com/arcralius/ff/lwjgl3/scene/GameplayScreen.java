@@ -207,6 +207,11 @@ public class GameplayScreen extends BaseScreen {
         scoreFont.setColor(1, 1, 1, 1); // White color
         scoreFont.draw(uiBatch, scoreText, 20, Gdx.graphics.getHeight() - 20);
 
+        // Here's the change - manually render the food info display with the UI batch
+        if (foodInfoDisplay.isActive()) {
+            foodInfoDisplay.render(uiBatch);
+        }
+
         uiBatch.end();
     }
 
