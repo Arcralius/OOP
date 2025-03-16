@@ -29,8 +29,8 @@ public class EntityController {
     }
 
     public FoodEntity addFoodEntity(String texturePath, float x, float y, String id, float width, float height,
-                                    String foodType, String nutritionalInfo) {
-        FoodEntity food = entityFactory.createFoodEntity(texturePath, x, y, id, width, height, foodType, nutritionalInfo);
+                                    String foodType) {
+        FoodEntity food = entityFactory.createFoodEntity(texturePath, x, y, id, width, height, foodType);
 
         if (food != null) {
             entityList.add(food);

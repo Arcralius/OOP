@@ -12,6 +12,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -42,6 +44,13 @@ public class GameplayScreen extends BaseScreen {
     // Food system components
     private FoodSystem foodSystem;
     private FoodInfoDisplay foodInfoDisplay;
+    private int foodCollected = 0;
+    private int totalFood = 0;
+    private BitmapFont scoreFont;
+
+    // UI camera for fixed position elements
+    private OrthographicCamera uiCamera;
+    private SpriteBatch uiBatch;
 
     public GameplayScreen(IO_Controller ioController, SceneController sceneController, MovementController movementController) {
         super(ioController);
@@ -74,11 +83,27 @@ public class GameplayScreen extends BaseScreen {
         font = new BitmapFont();
 
         // Initialize food-related components
-        foodSystem = new FoodSystem(entityController, 1000, 1000, 10); // Spawn 10 food items randomly across the map
+        foodSystem = new FoodSystem(entityController, 1000, 1000, 40); // Spawn 40 food items randomly across the map
         addComponent(foodSystem);
 
-        foodInfoDisplay = new FoodInfoDisplay(font);
+        foodInfoDisplay = new FoodInfoDisplay();
         addComponent(foodInfoDisplay);
+
+        // Initialize food counting system
+        this.totalFood = foodSystem.getTotalFoodCount();
+        this.foodCollected = 0;
+        this.scoreFont = new BitmapFont();
+        scoreFont.getData().setScale(1.5f);
+
+        // Setup UI camera for fixed position UI elements
+        this.uiCamera = new OrthographicCamera();
+        this.uiCamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        this.uiBatch = new SpriteBatch();
+    }
+
+    public void incrementFoodCollected() {
+        foodCollected++;
+        System.out.println("Food collected: " + foodCollected + "/" + totalFood);
     }
 
     public boolean isPaused() {
@@ -94,8 +119,8 @@ public class GameplayScreen extends BaseScreen {
         this.collisionTimer = 2.0f; // Display message for 2 seconds
     }
 
-    public void showFoodInfo(String foodType, String nutritionalInfo, float x, float y) {
-        foodInfoDisplay.showInfo(foodType, nutritionalInfo, x, y);
+    public void showFoodInfo(String foodType) {
+        foodInfoDisplay.showInfo(foodType);
     }
 
     public FoodSystem getFoodSystem() {
@@ -144,6 +169,9 @@ public class GameplayScreen extends BaseScreen {
         camera.zoom = 0.60f;
         camera.position.set(playableEntity.getX(), playableEntity.getY(), 0);
         camera.update();
+
+        // Update UI camera
+        uiCamera.update();
     }
 
     @Override
@@ -162,12 +190,37 @@ public class GameplayScreen extends BaseScreen {
         // Draw all entities
         entityController.draw(batch);
 
-        // Draw collision message
+        // Draw game world elements with the game camera
+        batch.begin();
+        // Draw collision message at player position
         if (!collisionMessage.isEmpty()) {
-            batch.begin();
             font.draw(batch, collisionMessage, playableEntity.getX(), playableEntity.getY() + 50);
-            batch.end();
         }
+        batch.end();
+
+        // Draw UI elements with fixed screen positions using the UI camera
+        uiBatch.setProjectionMatrix(uiCamera.combined);
+        uiBatch.begin();
+
+        // Draw the food counter in top left corner
+        String scoreText = foodCollected + "/" + totalFood + " healthy foods collected";
+        scoreFont.setColor(1, 1, 1, 1); // White color
+        scoreFont.draw(uiBatch, scoreText, 20, Gdx.graphics.getHeight() - 20);
+
+        uiBatch.end();
+    }
+
+    @Override
+    public void render(float delta) {
+        super.render(delta); // This calls update and draw
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        super.resize(width, height);
+        // Update UI camera for new dimensions
+        uiCamera.setToOrtho(false, width, height);
+        uiCamera.update();
     }
 
     @Override
@@ -177,5 +230,7 @@ public class GameplayScreen extends BaseScreen {
         mapRenderer.dispose();
         backgroundTexture.dispose();
         font.dispose();
+        scoreFont.dispose();
+        uiBatch.dispose();
     }
 }

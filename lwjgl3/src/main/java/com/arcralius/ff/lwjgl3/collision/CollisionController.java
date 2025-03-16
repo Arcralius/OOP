@@ -1,11 +1,13 @@
 package com.arcralius.ff.lwjgl3.collision;
 
 import com.arcralius.ff.lwjgl3.entity.BaseEntity;
+import com.arcralius.ff.lwjgl3.entity.FoodEntity;
 import com.arcralius.ff.lwjgl3.entity.NonPlayableEntity;
+import com.arcralius.ff.lwjgl3.entity.FoodData;
 import com.arcralius.ff.lwjgl3.scene.GameplayScreen;
 import com.arcralius.ff.lwjgl3.scene.EndScreen;
 import com.arcralius.ff.lwjgl3.scene.SceneController;
-import com.arcralius.ff.lwjgl3.input_output.IO_Controller; // Import IO_Controller
+import com.arcralius.ff.lwjgl3.input_output.IO_Controller;
 
 import java.util.List;
 
@@ -20,16 +22,31 @@ public class CollisionController implements CollisionInterface {
         this.sceneController = sceneController;
     }
 
+    @Override
     public void checkCollisions(BaseEntity player, List<BaseEntity> entityList) {
-        for (BaseEntity npc : entityList) {
-            if (npc instanceof NonPlayableEntity) {
-                if (player.getBoundary().overlaps(npc.getBoundary())) {
-                    handleCollision(player, npc);
+        try {
+            for (BaseEntity entity : entityList) {
+                if (player != entity && player.getBoundary().overlaps(entity.getBoundary())) {
+                    // Print debug info
+                    System.out.println("Collision detected with entity type: " + entity.getClass().getSimpleName());
+
+                    // Check if it's a food entity
+                    if (entity instanceof FoodEntity) {
+                        System.out.println("Food collision detected");
+                        handleFoodCollection(player, (FoodEntity) entity);
+                    } else if (entity instanceof NonPlayableEntity) {
+                        // Handle regular NPC collision
+                        handleCollision(player, entity);
+                    }
                 }
             }
+        } catch (Exception e) {
+            System.err.println("Error in checkCollisions: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
+    @Override
     public void handleCollision(BaseEntity a, BaseEntity b) {
         String aString = a.getId();
         String bString = b.getId();
@@ -40,6 +57,26 @@ public class CollisionController implements CollisionInterface {
         if ("enemy 3".equals(bString)) {
             System.out.println("Collision with entity 3 detected! Switching to EndScreen...");
             sceneController.changeScreen(new EndScreen(ioController, sceneController));
+        }
+    }
+
+    private void handleFoodCollection(BaseEntity player, FoodEntity food) {
+        try {
+            // Get food type
+            String foodType = food.getFoodType() != null ? food.getFoodType() : "unknown food";
+            gameplayScreen.showFoodInfo(foodType);
+
+            // Play sound effect
+            ioController.getAudioManager().playSoundEffect("item_collected");
+
+
+            // Remove entity and update counters
+            gameplayScreen.getEntityController().removeEntity(food);
+            gameplayScreen.getFoodSystem().foodCollected(food.getId());
+            gameplayScreen.incrementFoodCollected();
+        } catch (Exception e) {
+            System.err.println("Error in handleFoodCollection: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }

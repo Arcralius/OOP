@@ -27,6 +27,11 @@ public class FoodSystem implements ScreenComponent {
         this.activeFoodIds = new ArrayList<>();
     }
 
+    // Add this method to FoodSystem
+    public int getTotalFoodCount() {
+        return totalFoodCount;
+    }
+
     @Override
     public void initialize(BaseScreen screen) {
         this.screen = screen;
@@ -53,7 +58,7 @@ public class FoodSystem implements ScreenComponent {
     private void spawnRandomFoodItems() {
         String[] foodTypes = FoodData.getAllFoodTypes();
         List<Vector2> occupiedPositions = new ArrayList<>();
-        float minDistance = 100f; // Minimum distance between food items
+        float minDistance = 80f; // Minimum distance between food items
 
         for (int i = 0; i < totalFoodCount; i++) {
             String foodType = foodTypes[MathUtils.random(foodTypes.length - 1)];
@@ -78,19 +83,14 @@ public class FoodSystem implements ScreenComponent {
                 }
 
                 attempts++;
-            } while (!validPosition && attempts < 20); // Limit attempts to avoid infinite loops
+            } while (!validPosition && attempts < 50); // Limit attempts to avoid infinite loops
 
             if (validPosition) {
                 // Create food entity and store position
                 String id = "food_" + foodType + "_" + i;
 
                 FoodEntity food = entityController.addFoodEntity(
-                    FoodData.getTexturePath(foodType),
-                    x, y,
-                    id,
-                    32, 32,
-                    foodType,
-                    FoodData.getNutritionalInfo(foodType)
+                    FoodData.getTexturePath(foodType), x, y, id, 32, 32, foodType
                 );
 
                 if (food != null) {

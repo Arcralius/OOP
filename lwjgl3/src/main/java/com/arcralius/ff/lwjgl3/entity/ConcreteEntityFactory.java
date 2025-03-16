@@ -12,7 +12,8 @@ public class ConcreteEntityFactory implements IEntityFactory {
     }
 
     @Override
-    public FoodEntity createFoodEntity(String texturePath, float x, float y, String id, float width, float height, String foodType, String nutritionalInfo) {
-        return new FoodEntity(texturePath, x, y, id, width, height, foodType, nutritionalInfo);
+    public FoodEntity createFoodEntity(String texturePath, float x, float y, String id, float width, float height,
+                                       String foodType) {
+        return new FoodEntity(texturePath, x, y, id, width, height, foodType);
     }
 }

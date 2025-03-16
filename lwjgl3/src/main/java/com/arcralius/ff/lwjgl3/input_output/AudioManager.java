@@ -1,6 +1,7 @@
 package com.arcralius.ff.lwjgl3.input_output;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,13 +9,15 @@ import java.util.Map;
 public class AudioManager {
     private float volume;
     private Map<String, Music> musicTracks;
+    private Map<String, Sound> soundEffects; // New map for sound effects
     private Music currentTrack;
     private String currentTrackName;
-    private boolean isMuted = false; // Track mute state
+    private boolean isMuted = false;
 
     public AudioManager() {
-        this.volume = 1.0f; // Default volume
+        this.volume = 1.0f;
         this.musicTracks = new HashMap<>();
+        this.soundEffects = new HashMap<>(); // Initialize sound effects map
     }
 
     public String getCurrentTrack(){
@@ -25,19 +28,44 @@ public class AudioManager {
         loadMusic("gameplay_music","music/game_music.mp3");
         loadMusic("main_menu_music","music/main_menu.mp3");
         loadMusic("gameover_music","music/game_over.mp3");
+
+        // Load the collection sound as a sound effect, not music
+        loadSoundEffect("item_collected", "music/item_collected.mp3");
+    }
+
+    // New method to load sound effects
+    public void loadSoundEffect(String effectName, String filePath) {
+        FileHandle soundFile = Gdx.files.internal(filePath);
+        if(!soundFile.exists()) {
+            System.out.println("ERROR: Sound effect file not found at " + soundFile.path());
+            return;
+        }
+        Sound sound = Gdx.audio.newSound(soundFile);
+        soundEffects.put(effectName, sound);
+        System.out.println("Loaded sound effect: " + effectName);
+    }
+
+    // New method to play sound effects
+    public void playSoundEffect(String effectName) {
+        if (isMuted) return;
+
+        Sound sound = soundEffects.get(effectName);
+        if (sound != null) {
+            sound.play(volume);
+            System.out.println("Playing sound effect: " + effectName);
+        } else {
+            System.out.println("Sound effect not found: " + effectName);
+        }
     }
 
     public void loadMusic(String trackName, String filePath) {
-        //FileHandle musicFile = Gdx.files.internal("music/game_music.mp3");
-
         FileHandle musicFile = Gdx.files.internal(filePath);
-        Music music = Gdx.audio.newMusic(musicFile);
-        musicTracks.put(trackName, music); // Store music with a name
-
         if(!musicFile.exists()) {
             System.out.println("ERROR: Music file not found at " + musicFile.path());
             return;
         }
+        Music music = Gdx.audio.newMusic(musicFile);
+        musicTracks.put(trackName, music);
     }
 
     public void playMusic(String trackName, boolean looping) {
@@ -50,7 +78,7 @@ public class AudioManager {
         currentTrack = musicTracks.get(trackName);
         currentTrackName = trackName;
         currentTrack.setLooping(looping);
-        currentTrack.setVolume(isMuted ? 0 : volume); // Apply mute state
+        currentTrack.setVolume(isMuted ? 0 : volume);
         currentTrack.play();
         System.out.println("Playing music track: " + trackName);
     }
@@ -83,9 +111,11 @@ public class AudioManager {
     public float getVolume(){
         return volume;
     }
+
     public void setVolume(float level) {
-        if (!isMuted) { // Only update volume if NOT muted
+        if (!isMuted) {
             this.volume = level;
+            // Update volume for music
             for (Music track : musicTracks.values()) {
                 if (track.isPlaying()) {
                     track.setVolume(volume);
@@ -120,18 +150,26 @@ public class AudioManager {
             muteAll();
         }
 
-        // If a track is playing, update its volume based on mute state
         if (currentTrack != null) {
             currentTrack.setVolume(isMuted ? 0 : volume);
         }
     }
 
     public void dispose() {
-        stopCurrentMusic(); // Stop any currently playing track
+        stopCurrentMusic();
+
+        // Dispose music
         for (Music track : musicTracks.values()) {
             track.dispose();
         }
         musicTracks.clear();
+
+        // Dispose sound effects
+        for (Sound effect : soundEffects.values()) {
+            effect.dispose();
+        }
+        soundEffects.clear();
+
         System.out.println("Audio resources disposed.");
     }
 }
