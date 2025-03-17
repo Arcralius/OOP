@@ -75,9 +75,9 @@ public class GameplayScreen extends BaseScreen {
         this.playableEntity = entityController.getEntityById("player");
 
         // Create enemy entities
-        entityController.addEntity("Non_playable", "droplet.png", 300, 300, "enemy 1", 100, 32, 32);
-        entityController.addEntity("Non_playable", "droplet.png", 200, 100, "enemy 2", 200, 32, 32);
-        entityController.addEntity("Non_playable", "droplet.png", 300, 200, "enemy 3", 300, 32, 32);
+        //entityController.addEntity("Non_playable", "droplet.png", 300, 300, "enemy 1", 100, 32, 32);
+        //entityController.addEntity("Non_playable", "droplet.png", 200, 100, "enemy 2", 200, 32, 32);
+        //entityController.addEntity("Non_playable", "droplet.png", 300, 200, "enemy 3", 300, 32, 32);
 
         // Initialize font
         font = new BitmapFont();

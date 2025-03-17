@@ -17,7 +17,7 @@ public class MovementController {
     private float movementCooldown = 0.5f; // Time in seconds between movement changes
     private float timeSinceLastMove = 0;
     private float directionChangeTimer = 0; // Timer for changing directions
-    private static final float DIRECTION_CHANGE_INTERVAL = 3f; // 3 seconds for each direction change
+    private static final float DIRECTION_CHANGE_INTERVAL = 2f; // seconds for each direction change
     private int currentDirection = MathUtils.random(0, 3); // Random initial direction (0 = Up, 1 = Down, 2 = Left, 3 = Right)
 
     public MovementController(IO_Controller ioController, OrthographicCamera camera) {
@@ -62,19 +62,20 @@ public class MovementController {
 
     public void handleNPCMovement(NonPlayableEntity entity, float delta) {
         // Update the direction change timer
-        directionChangeTimer += delta;
+        entity.setDirectionChangeTimer(entity.getDirectionChangeTimer() + delta);
 
         // If the timer exceeds the interval, change direction
-        if (directionChangeTimer >= DIRECTION_CHANGE_INTERVAL) {
-            directionChangeTimer = 0; // Reset timer
-            currentDirection = MathUtils.random(0, 3); // Randomize direction
+        if (entity.getDirectionChangeTimer() >= DIRECTION_CHANGE_INTERVAL) {
+            entity.setDirectionChangeTimer(0); // Reset timer
+            entity.setCurrentDirection(MathUtils.random(0, 3)); // Randomize direction
         }
 
         // Move NPC based on direction
-        switch (currentDirection) {
+        switch (entity.getCurrentDirection()) {
             case 0: // UP
                 if (entity.getY() + npc_speed * delta > 940) {
                     entity.setY(940);
+                    entity.setCurrentDirection(1); // Change Direction to DOWN since hit boundary
                 } else {
                     entity.setY(entity.getY() + npc_speed * delta);
                 }
@@ -82,6 +83,7 @@ public class MovementController {
             case 1: // DOWN
                 if (entity.getY() - npc_speed * delta < 0) {
                     entity.setY(0);
+                    entity.setCurrentDirection(0); // Change Direction to UP since hit boundary
                 } else {
                     entity.setY(entity.getY() - npc_speed * delta);
                 }
@@ -89,6 +91,7 @@ public class MovementController {
             case 2: // LEFT
                 if (entity.getX() - npc_speed * delta < 0) {
                     entity.setX(0);
+                    entity.setCurrentDirection(3);
                 } else {
                     entity.setX(entity.getX() - npc_speed * delta);
                 }
@@ -96,6 +99,7 @@ public class MovementController {
             case 3: // RIGHT
                 if (entity.getX() + npc_speed * delta > 940) { // Adjust 1280 based on your actual boundary
                     entity.setX(940);
+                    entity.setCurrentDirection(2);
                 } else {
                     entity.setX(entity.getX() + npc_speed * delta);
                 }
