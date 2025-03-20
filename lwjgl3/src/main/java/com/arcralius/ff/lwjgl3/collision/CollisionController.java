@@ -4,6 +4,8 @@ import com.arcralius.ff.lwjgl3.entity.BaseEntity;
 import com.arcralius.ff.lwjgl3.entity.FoodEntity;
 import com.arcralius.ff.lwjgl3.entity.NonPlayableEntity;
 import com.arcralius.ff.lwjgl3.entity.FoodData;
+import com.arcralius.ff.lwjgl3.examples.Gameplay_example;
+import com.arcralius.ff.lwjgl3.movement.MovementController;
 import com.arcralius.ff.lwjgl3.scene.GameplayScreen;
 import com.arcralius.ff.lwjgl3.scene.EndScreen;
 import com.arcralius.ff.lwjgl3.scene.VictoryScreen;
@@ -16,6 +18,7 @@ public class CollisionController implements CollisionInterface {
     private GameplayScreen gameplayScreen;
     private IO_Controller ioController;
     private SceneController sceneController;
+
 
     public CollisionController(IO_Controller ioController, GameplayScreen gameplayScreen, SceneController sceneController) {
         this.ioController = ioController;
@@ -67,21 +70,21 @@ public class CollisionController implements CollisionInterface {
 
     private void handleFoodCollection(BaseEntity player, FoodEntity food) {
         try {
-            // Get food type
-            String foodType = food.getFoodType() != null ? food.getFoodType() : "unknown food";
-            gameplayScreen.showFoodInfo(foodType);
+            if (gameplayScreen instanceof Gameplay_example) {
+                Gameplay_example exampleScreen = (Gameplay_example) gameplayScreen;
+                String foodType = food.getFoodType() != null ? food.getFoodType() : "unknown food";
+                exampleScreen.showFoodInfo(foodType);
+                exampleScreen.incrementFoodCollected();
+            }
 
-            // Play sound effect
             ioController.getAudioManager().playSoundEffect("item_collected");
 
-
-            // Remove entity and update counters
+            // Safely remove the food entity
             gameplayScreen.getEntityController().removeEntity(food);
-            gameplayScreen.getFoodSystem().foodCollected(food.getId());
-            gameplayScreen.incrementFoodCollected();
         } catch (Exception e) {
             System.err.println("Error in handleFoodCollection: " + e.getMessage());
             e.printStackTrace();
         }
     }
+
 }

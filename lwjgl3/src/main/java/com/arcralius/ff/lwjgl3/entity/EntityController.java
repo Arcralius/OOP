@@ -61,7 +61,7 @@ public class EntityController {
         }
     }
 
-    public List<BaseEntity> getEntityList() {
+    public List<BaseEntity> getEntities() {
         return entityList;
     }
 }
