@@ -2,6 +2,10 @@ package com.arcralius.ff.lwjgl3.examples;
 
 import com.arcralius.ff.lwjgl3.entity.FoodEntity;
 import com.arcralius.ff.lwjgl3.entity.BaseEntity;
+import com.arcralius.ff.lwjgl3.entity.abstractFactory.EntityFactory;
+import com.arcralius.ff.lwjgl3.entity.abstractFactory.Entity_abstract_factory;
+import com.arcralius.ff.lwjgl3.entity.abstractFactory.NonPlayableFactory;
+import com.arcralius.ff.lwjgl3.entity.abstractFactory.PlayableFactory;
 import com.arcralius.ff.lwjgl3.scene.GameplayScreen;
 import com.arcralius.ff.lwjgl3.scene.SceneController;
 import com.arcralius.ff.lwjgl3.input_output.IO_Controller;
@@ -13,6 +17,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.arcralius.ff.lwjgl3.entity.Entitybuilder.GameEntityBuilder;
 
 public class Gameplay_example extends GameplayScreen {
     private FoodSystem foodSystem;
@@ -45,9 +50,16 @@ public class Gameplay_example extends GameplayScreen {
         scoreFont = new BitmapFont();
         scoreFont.getData().setScale(1.5f);
 
+
+
+
+
+
         // Initialize playable entity
-        entityController.addEntity("Playable", "bucket.png", 100, 100, "player", 1000, 20, 20);
-        this.playableEntity = entityController.getEntityById("player");
+        BaseEntity player = GameEntityBuilder.createEntity("playable", "player", "bucket.png", 100, 100, 1000, 20, 20);
+        entityController.addEntity(player);
+
+
 
         // Initialize enemies
         initialiseEnemies();
@@ -77,14 +89,29 @@ public class Gameplay_example extends GameplayScreen {
     }
 
     private void initialiseEnemies() {
-        entityController.addEntity("Non_playable", "droplet.png", 300, 300, "enemy 1", 100, 32, 32);
-        entityController.addEntity("Non_playable", "droplet.png", 200, 100, "enemy 2", 200, 32, 32);
-        entityController.addEntity("Non_playable", "droplet.png", 300, 200, "enemy 3", 300, 32, 32);
+        String[] ids = { "enemy 1", "enemy 2", "enemy 3" };
+        float[][] positions = {
+            { 300f, 300f, 100f },
+            { 200f, 100f, 200f },
+            { 300f, 200f, 300f }
+        };
 
-        enemy1 = entityController.getEntityById("enemy 1");
-        enemy2 = entityController.getEntityById("enemy 2");
-        enemy3 = entityController.getEntityById("enemy 3");
+        for (int i = 0; i < ids.length; i++) {
+            String id = ids[i];
+            float x = positions[i][0];
+            float y = positions[i][1];
+            float speed = positions[i][2];
+
+            BaseEntity enemy = GameEntityBuilder.createEntity("non_playable", id, "droplet.png", x, y, speed, 32, 32);
+            entityController.addEntity(enemy);
+
+            // Optionally keep reference to specific enemies
+            if (i == 0) enemy1 = enemy;
+            if (i == 1) enemy2 = enemy;
+            if (i == 2) enemy3 = enemy;
+        }
     }
+
 
     @Override
     protected void draw() {

@@ -1,46 +1,59 @@
 package com.arcralius.ff.lwjgl3.entity;
 
 import java.util.List;
+
+import com.arcralius.ff.lwjgl3.entity.abstractFactory.FoodFactory;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class EntityController {
     private List<BaseEntity> entityList;
-    private IEntityFactory entityFactory;
 
-    public EntityController(List<BaseEntity> entityList, IEntityFactory entityFactory) {
+
+    public EntityController(List<BaseEntity> entityList) {
         this.entityList = entityList;
-        this.entityFactory = entityFactory;
+
     }
 
-    public void addEntity(String type, String texturePath, float x, float y, String id, float speed, float width, float height) {
-        BaseEntity entity = null;
-        if (type.equalsIgnoreCase("Playable")) {
-            entity = entityFactory.createPlayableEntity(texturePath, x, y, id, speed, width, height);
-        } else if (type.equalsIgnoreCase("Non_playable")) {
-            entity = entityFactory.createNonPlayableEntity(texturePath, x, y, id, speed, width, height);
-        }
+    public void addEntity(BaseEntity entity) {
+
 
         if (entity != null) {
             entityList.add(entity);
-            System.out.println("Added entity: " + id + " at (" + x + ", " + y + ")");
+            System.out.println("Added entity: " + entity.getId() + " at (" + entity.getX() + ", " + entity.getY() + ")");
         } else {
-            System.out.println("Entity creation failed for type: " + type);
+            System.out.println("Entity creation failed");
         }
     }
 
-    public FoodEntity addFoodEntity(String texturePath, float x, float y, String id, float width, float height,
-                                    String foodType) {
-        FoodEntity food = entityFactory.createFoodEntity(texturePath, x, y, id, width, height, foodType);
+//    public FoodEntity addFoodEntity(String texturePath, float x, float y, String id, float width, float height,
+//                                    String foodType) {
+//        FoodEntity food = entityFactory.createFoodEntity(texturePath, x, y, id, width, height, foodType);
+//
+//        if (food != null) {
+//            entityList.add(food);
+//            System.out.println("Added food: " + id + " (" + foodType + ") at (" + x + ", " + y + ")");
+//            return food;
+//        } else {
+//            System.out.println("Food creation failed");
+//            return null;
+//        }
+//    }
+
+    public FoodEntity addFoodEntity(String foodType, float x, float y, String id, float width, float height) {
+        String texturePath = FoodData.getTexturePath(foodType);
+        FoodFactory factory = new FoodFactory(id, foodType, texturePath, x, y, width, height);
+        FoodEntity food = (FoodEntity) factory.createEntity();
 
         if (food != null) {
             entityList.add(food);
             System.out.println("Added food: " + id + " (" + foodType + ") at (" + x + ", " + y + ")");
-            return food;
         } else {
             System.out.println("Food creation failed");
-            return null;
         }
+
+        return food;
     }
+
 
     public BaseEntity getEntityById(String id) {
         for (BaseEntity entity : entityList) {
@@ -61,7 +74,5 @@ public class EntityController {
         }
     }
 
-    public List<BaseEntity> getEntities() {
-        return entityList;
-    }
+
 }

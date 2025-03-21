@@ -1,6 +1,8 @@
 package com.arcralius.ff.lwjgl3.scene.component;
 
+import com.arcralius.ff.lwjgl3.entity.BaseEntity;
 import com.arcralius.ff.lwjgl3.entity.EntityController;
+import com.arcralius.ff.lwjgl3.entity.Entitybuilder.GameEntityBuilder;
 import com.arcralius.ff.lwjgl3.entity.FoodEntity;
 import com.arcralius.ff.lwjgl3.entity.FoodData;
 import com.arcralius.ff.lwjgl3.scene.BaseScreen;
@@ -55,15 +57,63 @@ public class FoodSystem implements ScreenComponent {
         // Nothing to dispose
     }
 
+//    private void spawnRandomFoodItems() {
+//        String[] foodTypes = FoodData.getAllFoodTypes();
+//        List<Vector2> occupiedPositions = new ArrayList<>();
+//        float minDistance = 80f; // Minimum distance between food items
+//
+//        for (int i = 0; i < totalFoodCount; i++) {
+//            String foodType = foodTypes[MathUtils.random(foodTypes.length - 1)];
+//
+//            // Try to find a valid position (not too close to other items)
+//            float x, y;
+//            boolean validPosition = false;
+//            int attempts = 0;
+//
+//            do {
+//                x = MathUtils.random(100, mapWidth - 100);
+//                y = MathUtils.random(100, mapHeight - 100);
+//
+//                // Check distance from other food items
+//                validPosition = true;
+//                for (Vector2 pos : occupiedPositions) {
+//                    float distance = Vector2.dst(x, y, pos.x, pos.y);
+//                    if (distance < minDistance) {
+//                        validPosition = false;
+//                        break;
+//                    }
+//                }
+//
+//                attempts++;
+//            } while (!validPosition && attempts < 50); // Limit attempts to avoid infinite loops
+//
+//            if (validPosition) {
+//                // Create food entity and store position
+//                String id = "food_" + foodType + "_" + i;
+//
+//                FoodEntity food = entityController.addFoodEntity(
+//                    FoodData.getTexturePath(foodType), x, y, id, 32, 32, foodType
+//                );
+//
+//                if (food != null) {
+//                    activeFoodIds.add(id);
+//                    occupiedPositions.add(new Vector2(x, y));
+//                    System.out.println("Spawned " + foodType + " at position (" + x + ", " + y + ")");
+//                }
+//            }
+//        }
+//
+//        System.out.println("Food system initialized - Spawned " + occupiedPositions.size() + " food items");
+//    }
+
     private void spawnRandomFoodItems() {
         String[] foodTypes = FoodData.getAllFoodTypes();
         List<Vector2> occupiedPositions = new ArrayList<>();
-        float minDistance = 80f; // Minimum distance between food items
+        float minDistance = 80f;
 
         for (int i = 0; i < totalFoodCount; i++) {
             String foodType = foodTypes[MathUtils.random(foodTypes.length - 1)];
 
-            // Try to find a valid position (not too close to other items)
             float x, y;
             boolean validPosition = false;
             int attempts = 0;
@@ -71,29 +121,34 @@ public class FoodSystem implements ScreenComponent {
             do {
                 x = MathUtils.random(100, mapWidth - 100);
                 y = MathUtils.random(100, mapHeight - 100);
-
-                // Check distance from other food items
                 validPosition = true;
+
                 for (Vector2 pos : occupiedPositions) {
-                    float distance = Vector2.dst(x, y, pos.x, pos.y);
-                    if (distance < minDistance) {
+                    if (Vector2.dst(x, y, pos.x, pos.y) < minDistance) {
                         validPosition = false;
                         break;
                     }
                 }
 
                 attempts++;
-            } while (!validPosition && attempts < 50); // Limit attempts to avoid infinite loops
+            } while (!validPosition && attempts < 50);
 
             if (validPosition) {
-                // Create food entity and store position
                 String id = "food_" + foodType + "_" + i;
 
-                FoodEntity food = entityController.addFoodEntity(
-                    FoodData.getTexturePath(foodType), x, y, id, 32, 32, foodType
+                // ✅ Use factory-based creation
+                BaseEntity food = GameEntityBuilder.createFoodEntity(
+                    id,
+                    foodType,
+                    FoodData.getTexturePath(foodType),
+                    x,
+                    y,
+                    32,
+                    32
                 );
 
                 if (food != null) {
+                    entityController.addEntity(food);
                     activeFoodIds.add(id);
                     occupiedPositions.add(new Vector2(x, y));
                     System.out.println("Spawned " + foodType + " at position (" + x + ", " + y + ")");
@@ -103,6 +158,9 @@ public class FoodSystem implements ScreenComponent {
 
         System.out.println("Food system initialized - Spawned " + occupiedPositions.size() + " food items");
     }
+
+
+
 
     public void foodCollected(String foodId) {
         if (activeFoodIds.remove(foodId)) {

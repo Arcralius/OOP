@@ -2,6 +2,8 @@ package com.arcralius.ff.lwjgl3.scene;
 
 import com.arcralius.ff.lwjgl3.entity.*;
 import com.arcralius.ff.lwjgl3.collision.CollisionController;
+//import com.arcralius.ff.lwjgl3.entity.abstractFactory.ConcreteEntityFactory;
+//import com.arcralius.ff.lwjgl3.entity.abstractFactory.IEntityFactory;
 import com.arcralius.ff.lwjgl3.input_output.IO_Controller;
 import com.arcralius.ff.lwjgl3.movement.MovementController;
 import com.badlogic.gdx.Gdx;
@@ -27,8 +29,8 @@ public class GameplayScreen extends BaseScreen {
     private final MovementController movementController;
     private final SceneController sceneController;
     private final List<BaseEntity> entityList;
-    public final EntityController entityController;
     private final CollisionController collisionController;
+    protected final EntityController entityController;  //
 
     private BitmapFont font;
     private String collisionMessage = "";
@@ -45,8 +47,8 @@ public class GameplayScreen extends BaseScreen {
         this.collisionController = new CollisionController(ioController, this, sceneController);
 
         entityList = new ArrayList<>();
-        IEntityFactory entityFactory = new ConcreteEntityFactory();
-        entityController = new EntityController(entityList, entityFactory);
+        entityController = new EntityController(entityList);
+
 
         this.map = new TmxMapLoader().load("background.tmx");
         this.mapRenderer = new OrthogonalTiledMapRenderer(map, batch);
@@ -60,6 +62,7 @@ public class GameplayScreen extends BaseScreen {
         this.uiCamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         this.uiBatch = new SpriteBatch();
     }
+
 
     public boolean isPaused() {
         return isPaused;
@@ -87,6 +90,8 @@ public class GameplayScreen extends BaseScreen {
 
     @Override
     protected void update(float delta) {
+        playableEntity = entityController.getEntityById("player");
+
         if (isPaused) return;
         if (playableEntity != null) {
             movementController.handleMovement(playableEntity, delta);
@@ -124,6 +129,9 @@ public class GameplayScreen extends BaseScreen {
         batch.end();
         mapRenderer.setView(camera);
         mapRenderer.render();
+
+
+
         entityController.draw(batch);
 
         batch.begin();
