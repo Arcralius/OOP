@@ -6,6 +6,7 @@ import com.arcralius.ff.lwjgl3.scene.GameplayScreen;
 import com.arcralius.ff.lwjgl3.scene.SceneController;
 import com.arcralius.ff.lwjgl3.input_output.IO_Controller;
 import com.arcralius.ff.lwjgl3.movement.MovementController;
+import com.arcralius.ff.lwjgl3.scene.VictoryScreen;
 import com.arcralius.ff.lwjgl3.scene.component.FoodSystem;
 import com.arcralius.ff.lwjgl3.scene.component.FoodInfoDisplay;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -24,6 +25,7 @@ public class Gameplay_example extends GameplayScreen {
     // UI elements
     private SpriteBatch uiBatch;
     private OrthographicCamera uiCamera;
+    private SceneController sceneController;
 
     public Gameplay_example(IO_Controller ioController, SceneController sceneController, MovementController movementController) {
         super(ioController, sceneController, movementController);
@@ -54,14 +56,24 @@ public class Gameplay_example extends GameplayScreen {
         uiBatch = new SpriteBatch();
         uiCamera = new OrthographicCamera();
         uiCamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+        this.sceneController = sceneController;
     }
 
     public void incrementFoodCollected() {
         foodCollected++;
+        checkVictoryCondition();
     }
 
     public void showFoodInfo(String foodType) {
         foodInfoDisplay.showInfo(foodType);
+    }
+
+    private void checkVictoryCondition() {
+        if (foodCollected >= totalFood) {
+            ioController.getAudioManager().stopMusic("gameplay_music");
+            sceneController.changeScreen(new VictoryScreen(ioController, sceneController));
+        }
     }
 
     private void initialiseEnemies() {

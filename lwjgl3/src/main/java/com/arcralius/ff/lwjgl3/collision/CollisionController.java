@@ -62,10 +62,6 @@ public class CollisionController implements CollisionInterface {
             System.out.println("Collision with entity 3 detected! Switching to EndScreen...");
             sceneController.changeScreen(new EndScreen(ioController, sceneController));
         }
-        if ("enemy 1".equals(bString)) {
-            System.out.println("Collision with entity 3 detected! Switching to EndScreen...");
-            sceneController.changeScreen(new VictoryScreen(ioController, sceneController));
-        }
     }
 
     private void handleFoodCollection(BaseEntity player, FoodEntity food) {
