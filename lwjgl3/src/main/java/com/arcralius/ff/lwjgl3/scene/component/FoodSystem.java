@@ -136,16 +136,7 @@ public class FoodSystem implements ScreenComponent {
             if (validPosition) {
                 String id = "food_" + foodType + "_" + i;
 
-                // ✅ Use factory-based creation
-                BaseEntity food = GameEntityBuilder.createFoodEntity(
-                    id,
-                    foodType,
-                    FoodData.getTexturePath(foodType),
-                    x,
-                    y,
-                    32,
-                    32
-                );
+                BaseEntity food = GameEntityBuilder.createFoodEntity(id, foodType, FoodData.getTexturePath(foodType), x, y, 32, 32);
 
                 if (food != null) {
                     entityController.addEntity(food);

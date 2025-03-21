@@ -3,12 +3,9 @@ package com.arcralius.ff.lwjgl3.collision;
 import com.arcralius.ff.lwjgl3.entity.BaseEntity;
 import com.arcralius.ff.lwjgl3.entity.FoodEntity;
 import com.arcralius.ff.lwjgl3.entity.NonPlayableEntity;
-import com.arcralius.ff.lwjgl3.entity.FoodData;
-import com.arcralius.ff.lwjgl3.examples.Gameplay_example;
-import com.arcralius.ff.lwjgl3.movement.MovementController;
+import com.arcralius.ff.lwjgl3.specific_scene.Gameplay_Specific_scene;
 import com.arcralius.ff.lwjgl3.scene.GameplayScreen;
 import com.arcralius.ff.lwjgl3.scene.EndScreen;
-import com.arcralius.ff.lwjgl3.scene.VictoryScreen;
 import com.arcralius.ff.lwjgl3.scene.SceneController;
 import com.arcralius.ff.lwjgl3.input_output.IO_Controller;
 
@@ -66,8 +63,8 @@ public class CollisionController implements CollisionInterface {
 
     private void handleFoodCollection(BaseEntity player, FoodEntity food) {
         try {
-            if (gameplayScreen instanceof Gameplay_example) {
-                Gameplay_example exampleScreen = (Gameplay_example) gameplayScreen;
+            if (gameplayScreen instanceof Gameplay_Specific_scene) {
+                Gameplay_Specific_scene exampleScreen = (Gameplay_Specific_scene) gameplayScreen;
                 String foodType = food.getFoodType() != null ? food.getFoodType() : "unknown food";
                 exampleScreen.showFoodInfo(foodType);
                 exampleScreen.incrementFoodCollected();

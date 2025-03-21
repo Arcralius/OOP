@@ -1,11 +1,6 @@
-package com.arcralius.ff.lwjgl3.examples;
+package com.arcralius.ff.lwjgl3.specific_scene;
 
-import com.arcralius.ff.lwjgl3.entity.FoodEntity;
 import com.arcralius.ff.lwjgl3.entity.BaseEntity;
-import com.arcralius.ff.lwjgl3.entity.abstractFactory.EntityFactory;
-import com.arcralius.ff.lwjgl3.entity.abstractFactory.Entity_abstract_factory;
-import com.arcralius.ff.lwjgl3.entity.abstractFactory.NonPlayableFactory;
-import com.arcralius.ff.lwjgl3.entity.abstractFactory.PlayableFactory;
 import com.arcralius.ff.lwjgl3.scene.GameplayScreen;
 import com.arcralius.ff.lwjgl3.scene.SceneController;
 import com.arcralius.ff.lwjgl3.input_output.IO_Controller;
@@ -19,7 +14,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.arcralius.ff.lwjgl3.entity.Entitybuilder.GameEntityBuilder;
 
-public class Gameplay_example extends GameplayScreen {
+public class Gameplay_Specific_scene extends GameplayScreen {
     private FoodSystem foodSystem;
     private FoodInfoDisplay foodInfoDisplay;
     private int foodCollected = 0;
@@ -32,9 +27,9 @@ public class Gameplay_example extends GameplayScreen {
     private OrthographicCamera uiCamera;
     private SceneController sceneController;
 
-    public Gameplay_example(IO_Controller ioController, SceneController sceneController, MovementController movementController) {
+    public Gameplay_Specific_scene(IO_Controller ioController, SceneController sceneController, MovementController movementController) {
         super(ioController, sceneController, movementController);
-        ioController.getDisplayManager().setCurrentScreen("Gameplay_example");
+        ioController.getDisplayManager().setCurrentScreen("Gameplay_specific_scene");
         ioController.getDisplayManager().setResolution(ioController.getDisplayManager().getResolution());
 
         // Load and start music
@@ -105,10 +100,7 @@ public class Gameplay_example extends GameplayScreen {
             BaseEntity enemy = GameEntityBuilder.createEntity("non_playable", id, "droplet.png", x, y, speed, 32, 32);
             entityController.addEntity(enemy);
 
-            // Optionally keep reference to specific enemies
-            if (i == 0) enemy1 = enemy;
-            if (i == 1) enemy2 = enemy;
-            if (i == 2) enemy3 = enemy;
+
         }
     }
 
