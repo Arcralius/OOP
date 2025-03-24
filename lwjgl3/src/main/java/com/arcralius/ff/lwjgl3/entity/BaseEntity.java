@@ -77,6 +77,15 @@ public abstract class BaseEntity {
         boundary.setY(newY); // Update boundary position
     }
 
+    public float getWidth() {
+        return width;
+    }
+
+    public float getHeight() {
+        return height;
+    }
+
+
     // Setter and getter for speed
     public float getSpeed() {
         return speed;
