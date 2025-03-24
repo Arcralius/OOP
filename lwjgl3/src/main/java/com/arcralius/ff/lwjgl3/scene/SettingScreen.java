@@ -29,6 +29,7 @@ public class SettingScreen extends BaseScreen {
     private TextButton buttonVolumeDown;
     private Label volumeLabel;
     private final float volumeStep = 0.1f;
+    private UIComponentFactory uiFactory;
 
     public SettingScreen(IO_Controller ioController, SceneController sceneController) {
         super(ioController);
@@ -53,26 +54,22 @@ public class SettingScreen extends BaseScreen {
         backgroundSprite2.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         backgroundX2 = Gdx.graphics.getWidth();
 
+
+        // Instantiate the UIComponentFactory with the atlas and font paths.
+        uiFactory = new UIComponentFactory("button.atlas", "white.fnt");
+
         setupUI();
     }
 
     private void setupUI() {
-        atlas = new TextureAtlas(Gdx.files.internal("button.atlas"));
-        skin = new Skin(atlas);
-
         Table table = new Table();
         table.setFillParent(true);
 
-        BitmapFont whiteFont = new BitmapFont(Gdx.files.internal("white.fnt"), false);
+        // Create the volume label using the factory.
+        volumeLabel = uiFactory.createLabel(getVolumeText());
 
-        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-        textButtonStyle.up = skin.getDrawable("menacing");
-        textButtonStyle.over = skin.getDrawable("menacing2");
-        textButtonStyle.font = whiteFont;
-
-        volumeLabel = new Label(getVolumeText(), new Label.LabelStyle(whiteFont, null));
-
-        buttonToggleMute = new TextButton(ioController.getAudioManager().isMuted() ? "Unmute Audio" : "Mute Audio", textButtonStyle);
+        // Create and configure the Toggle Mute button.
+        buttonToggleMute = uiFactory.createTextButton(ioController.getAudioManager().isMuted() ? "Unmute Audio" : "Mute Audio");
         buttonToggleMute.pad(20, 50, 20, 50);
         buttonToggleMute.addListener(new ClickListener() {
             @Override
@@ -81,7 +78,8 @@ public class SettingScreen extends BaseScreen {
             }
         });
 
-        buttonVolumeUp = new TextButton("Volume Up", textButtonStyle);
+        // Create and configure the Volume Up button.
+        buttonVolumeUp = uiFactory.createTextButton("Volume Up");
         buttonVolumeUp.pad(20);
         buttonVolumeUp.addListener(new ClickListener() {
             @Override
@@ -93,7 +91,8 @@ public class SettingScreen extends BaseScreen {
             }
         });
 
-        buttonVolumeDown = new TextButton("Volume Down", textButtonStyle);
+        // Create and configure the Volume Down button.
+        buttonVolumeDown = uiFactory.createTextButton("Volume Down");
         buttonVolumeDown.pad(20);
         buttonVolumeDown.addListener(new ClickListener() {
             @Override
@@ -105,7 +104,8 @@ public class SettingScreen extends BaseScreen {
             }
         });
 
-        TextButton buttonBack = new TextButton("Back to Main Menu", textButtonStyle);
+        // Create and configure the Back button.
+        TextButton buttonBack = uiFactory.createTextButton("Back to Main Menu");
         buttonBack.pad(20, 50, 20, 50);
         buttonBack.addListener(new ClickListener() {
             @Override
@@ -114,6 +114,7 @@ public class SettingScreen extends BaseScreen {
             }
         });
 
+        // Build layout tables.
         Table volumeLabelTable = new Table();
         volumeLabelTable.add(volumeLabel).center();
 
@@ -189,8 +190,8 @@ public class SettingScreen extends BaseScreen {
     @Override
     public void dispose() {
         stage.dispose();
-        skin.dispose();
-        atlas.dispose();
+        uiFactory.dispose();  // Dispose the Skin and Font managed by the factory.
+
         backgroundTexture.dispose();
     }
 }

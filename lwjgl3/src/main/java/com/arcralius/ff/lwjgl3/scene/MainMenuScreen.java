@@ -28,6 +28,11 @@ public class MainMenuScreen extends BaseScreen {
     private Sprite backgroundSprite1, backgroundSprite2;
     private float backgroundX1 = 0, backgroundX2;
 
+    private UIComponentFactory uiFactory;
+
+
+
+
     public MainMenuScreen(IO_Controller ioController, SceneController sceneController) {
         super(ioController);
         this.sceneController = sceneController;
@@ -62,27 +67,19 @@ public class MainMenuScreen extends BaseScreen {
         // Position the second sprite to the right of the first one
         backgroundX2 = Gdx.graphics.getWidth();
 
+        // Instantiate the UIComponentFactory with the atlas and font paths.
+        uiFactory = new UIComponentFactory("button.atlas", "white.fnt");
+
         // Initialize UI elements
         setupUI();
     }
 
     private void setupUI() {
-        atlas = new TextureAtlas(Gdx.files.internal("button.atlas"));
-        skin = new Skin(atlas);
-
         Table table = new Table();
         table.setFillParent(true); // Properly centers elements
 
-        BitmapFont whiteFont = new BitmapFont(Gdx.files.internal("white.fnt"), false);
-
-        // Define button style with hover effect
-        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-        textButtonStyle.up = skin.getDrawable("menacing");
-        textButtonStyle.over = skin.getDrawable("menacing2");
-        textButtonStyle.font = whiteFont;
-
-        // Create Play Button
-        TextButton buttonPlay = new TextButton("Start Game", textButtonStyle);
+        // Create Play Button using the factory
+        TextButton buttonPlay = uiFactory.createTextButton("Start Game");
         buttonPlay.pad(20, 50, 20, 50);
         buttonPlay.addListener(new ClickListener() {
             @Override
@@ -91,8 +88,8 @@ public class MainMenuScreen extends BaseScreen {
             }
         });
 
-        // Create Settings Button
-        TextButton buttonSettings = new TextButton("Settings", textButtonStyle);
+        // Create Settings Button using the factory
+        TextButton buttonSettings = uiFactory.createTextButton("Settings");
         buttonSettings.pad(20, 50, 20, 50);
         buttonSettings.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
@@ -100,8 +97,8 @@ public class MainMenuScreen extends BaseScreen {
             }
         });
 
-        // Create Quit Button
-        TextButton buttonQuit = new TextButton("Quit", textButtonStyle);
+        // Create Quit Button using the factory
+        TextButton buttonQuit = uiFactory.createTextButton("Quit");
         buttonQuit.pad(20, 50, 20, 50);
         buttonQuit.addListener(new ClickListener() {
             @Override
@@ -163,8 +160,8 @@ public class MainMenuScreen extends BaseScreen {
     @Override
     public void dispose() {
         stage.dispose();
-        skin.dispose();
-        atlas.dispose();
+        uiFactory.dispose();  // Dispose the Skin and Font managed by the factory.
+
         backgroundTexture.dispose();
     }
 }

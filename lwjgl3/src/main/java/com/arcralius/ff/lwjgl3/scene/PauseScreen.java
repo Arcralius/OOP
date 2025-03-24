@@ -34,6 +34,9 @@ public class PauseScreen extends BaseScreen {
     private Texture backgroundTexture;
     private Sprite backgroundSprite;
 
+    //  factory field:
+    private UIComponentFactory uiFactory;
+
     public PauseScreen(IO_Controller ioController, SceneController sceneController, GameplayScreen gameplayScreen) {
         super(ioController);
         this.sceneController = sceneController;
@@ -52,26 +55,19 @@ public class PauseScreen extends BaseScreen {
         backgroundSprite = new Sprite(backgroundTexture);
         backgroundSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
+        // Instantiate the UIComponentFactory with the atlas and font paths.
+
+        uiFactory = new UIComponentFactory("button.atlas", "white.fnt");
+
         setupUI();
     }
 
     private void setupUI() {
-        atlas = new TextureAtlas(Gdx.files.internal("button.atlas"));
-        skin = new Skin(atlas);
+        // Create the volume label using the factory.
+        volumeLabel = uiFactory.createLabel(getVolumeText());
 
-        Table table = new Table();
-        table.setFillParent(true);
-
-        BitmapFont whiteFont = new BitmapFont(Gdx.files.internal("white.fnt"), false);
-
-        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-        textButtonStyle.up = skin.getDrawable("menacing");
-        textButtonStyle.over = skin.getDrawable("menacing2");
-        textButtonStyle.font = whiteFont;
-
-        volumeLabel = new Label(getVolumeText(), new Label.LabelStyle(whiteFont, null));
-
-        TextButton buttonResume = new TextButton("Resume Game", textButtonStyle);
+        // Create buttons using the factory.
+        TextButton buttonResume = uiFactory.createTextButton("Resume Game");
         buttonResume.pad(20, 50, 20, 50);
         buttonResume.addListener(new ClickListener() {
             @Override
@@ -81,7 +77,7 @@ public class PauseScreen extends BaseScreen {
             }
         });
 
-        buttonToggleMute = new TextButton(ioController.getAudioManager().isMuted() ? "Unmute Audio" : "Mute Audio", textButtonStyle);
+        buttonToggleMute = uiFactory.createTextButton(ioController.getAudioManager().isMuted() ? "Unmute Audio" : "Mute Audio");
         buttonToggleMute.pad(20, 50, 20, 50);
         buttonToggleMute.addListener(new ClickListener() {
             @Override
@@ -90,7 +86,7 @@ public class PauseScreen extends BaseScreen {
             }
         });
 
-        TextButton buttonQuit = new TextButton("Quit", textButtonStyle);
+        TextButton buttonQuit = uiFactory.createTextButton("Quit");
         buttonQuit.pad(20, 50, 20, 50);
         buttonQuit.addListener(new ClickListener() {
             @Override
@@ -99,6 +95,7 @@ public class PauseScreen extends BaseScreen {
             }
         });
 
+        // Setup slider style as before (using external slider textures).
         Texture sliderTexture = new Texture(Gdx.files.internal("music/slide_horizontal_grey.png"));
         TextureRegion sliderTextureRegion = new TextureRegion(sliderTexture);
         TextureRegionDrawable sliderGreyDrawable = new TextureRegionDrawable(sliderTextureRegion);
@@ -112,16 +109,17 @@ public class PauseScreen extends BaseScreen {
         sliderStyle.knob = sliderYellowDrawable;
 
         volumeSlider = new Slider(0, 1, 0.01f, false, sliderStyle);
-        volumeSlider.setValue(ioController.getAudioManager().getVolume()); // Set the slider to the audio manager volume.
+        volumeSlider.setValue(ioController.getAudioManager().getVolume());
         volumeSlider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 float sliderValue = volumeSlider.getValue();
-                ioController.getAudioManager().setVolume(sliderValue); // Set the audio manager to the slider value.
+                ioController.getAudioManager().setVolume(sliderValue);
                 updateVolumeLabel();
             }
         });
 
+        // Build tables for layout.
         Table volumeLabelTable = new Table();
         volumeLabelTable.add(volumeLabel).center();
 
@@ -136,6 +134,8 @@ public class PauseScreen extends BaseScreen {
         Table quitRow = new Table();
         quitRow.add(buttonQuit).fillX().uniformX();
 
+        Table table = new Table();
+        table.setFillParent(true);
         table.add(centerRow).center().padTop(20);
         table.row().padTop(20);
         table.add(volumeLabelTable).center().padTop(20);
@@ -184,8 +184,7 @@ public class PauseScreen extends BaseScreen {
     @Override
     public void dispose() {
         stage.dispose();
-        skin.dispose();
-        atlas.dispose();
+        uiFactory.dispose(); // Dispose the skin and font loaded by the factory.
         backgroundTexture.dispose();
     }
 }
