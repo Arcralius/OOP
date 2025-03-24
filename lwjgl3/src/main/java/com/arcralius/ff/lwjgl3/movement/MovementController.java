@@ -38,10 +38,22 @@ public class MovementController {
         float newY = player.getY();
 
         // Use IO_Controller for keyboard input
-        if (ioController.getInputManager().isKeyPressed(Input.Keys.W)) newY += speed * delta;
-        if (ioController.getInputManager().isKeyPressed(Input.Keys.A)) newX -= speed * delta;
-        if (ioController.getInputManager().isKeyPressed(Input.Keys.S)) newY -= speed * delta;
-        if (ioController.getInputManager().isKeyPressed(Input.Keys.D)) newX += speed * delta;
+        if (ioController.getInputManager().isKeyPressed(Input.Keys.W)){
+            player.setTextureObject("playable_character/playable_character_backwards.png");
+            newY += speed * delta;
+        }
+        if (ioController.getInputManager().isKeyPressed(Input.Keys.A)){
+            player.setTextureObject("playable_character/playable_character_left.png");
+            newX -= speed * delta;
+        }
+        if (ioController.getInputManager().isKeyPressed(Input.Keys.S)){
+            player.setTextureObject("playable_character/playable_character_forward.png");
+            newY -= speed * delta;
+        }
+        if (ioController.getInputManager().isKeyPressed(Input.Keys.D)){
+            player.setTextureObject("playable_character/playable_character_right.png");
+            newX += speed * delta;
+        }
 
         // Boundary restrictions
         if (newX < 0) {

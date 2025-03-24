@@ -51,7 +51,7 @@ public class Gameplay_Specific_scene extends GameplayScreen {
 
 
         // Initialize playable entity
-        BaseEntity player = GameEntityBuilder.createEntity("playable", "player", "bucket.png", 100, 100, 1000, 20, 20);
+        BaseEntity player = GameEntityBuilder.createEntity("playable", "player", "playable_character/playable_character_forward.png", 100, 100, 1000, 30, 30);
         entityController.addEntity(player);
 
 

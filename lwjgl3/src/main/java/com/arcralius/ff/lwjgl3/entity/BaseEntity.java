@@ -48,6 +48,14 @@ public abstract class BaseEntity {
         return textureObject;
     }
 
+    public void setTextureObject(String texturePath){
+        this.textureObject = new Texture(texturePath);
+        this.sprite = new Sprite(textureObject); // Initialize sprite with the texture
+        this.sprite.setSize(this.width, this.height); // Set sprite size
+        this.sprite.setPosition(getX(), getY()); // Set initial position
+    }
+
+
     // Getter and setter for position and other properties
     public float getX() {
         return x;
