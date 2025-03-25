@@ -24,13 +24,13 @@ import java.util.List;
 public class GameplayScreen extends BaseScreen {
     protected final TiledMap map;
     protected final OrthogonalTiledMapRenderer mapRenderer;
-    private final Texture backgroundTexture;
-    private final Sprite backgroundSprite;
+    //private final Texture backgroundTexture;
+    //private final Sprite backgroundSprite;
     private final MovementController movementController;
     private final SceneController sceneController;
     private final List<BaseEntity> entityList;
     private final CollisionController collisionController;
-    protected final EntityController entityController;  //
+    protected final EntityController entityController;
 
     private BitmapFont font;
     private String collisionMessage = "";
@@ -52,9 +52,9 @@ public class GameplayScreen extends BaseScreen {
 
         this.map = new TmxMapLoader().load("background.tmx");
         this.mapRenderer = new OrthogonalTiledMapRenderer(map, batch);
-        this.backgroundTexture = new Texture("plains.png");
-        this.backgroundSprite = new Sprite(backgroundTexture);
-        backgroundSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        //this.backgroundTexture = new Texture("plains.png");
+        //this.backgroundSprite = new Sprite(backgroundTexture);
+        //backgroundSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         // Removed playable entity initialization
         font = new BitmapFont();
@@ -132,7 +132,7 @@ public class GameplayScreen extends BaseScreen {
 
         // 1. Draw background
         batch.begin();
-        backgroundSprite.draw(batch);
+        //backgroundSprite.draw(batch);
         batch.end();
 
         // 2. Render the map
@@ -180,7 +180,7 @@ public class GameplayScreen extends BaseScreen {
         super.dispose();
         map.dispose();
         mapRenderer.dispose();
-        backgroundTexture.dispose();
+        //backgroundTexture.dispose();
         font.dispose();
         uiBatch.dispose();
     }

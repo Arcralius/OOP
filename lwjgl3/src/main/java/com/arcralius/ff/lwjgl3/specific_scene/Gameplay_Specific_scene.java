@@ -95,8 +95,6 @@ public class Gameplay_Specific_scene extends GameplayScreen {
 
     @Override
     protected void draw() {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(Gdx.gl.GL_COLOR_BUFFER_BIT);
         super.draw(); // Calls GameplayScreen's draw method
 
         // Draw UI elements

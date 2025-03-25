@@ -5,7 +5,7 @@ public class DisplayManager {
     private String currentScreen;
 
     public DisplayManager() {
-        this.resolutionScreen = "1920x1080";  // Default resolution
+        this.resolutionScreen = "800x550";  // Default resolution
         this.currentScreen = "MainMenuScreen";  // Default starting screen
     }
 
