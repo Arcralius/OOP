@@ -28,6 +28,9 @@ public class EndScreen extends BaseScreen {
 
     @Override
     public void render(float delta) {
+        // Force clear color to black and clear buffer
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(Gdx.gl.GL_COLOR_BUFFER_BIT);
         update(delta); // Call update for game logic
         batch.setProjectionMatrix(camera.combined);
         batch.begin();

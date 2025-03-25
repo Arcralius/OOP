@@ -3,6 +3,7 @@ package com.arcralius.ff.lwjgl3.scene;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Screen;
 import com.arcralius.ff.lwjgl3.input_output.IO_Controller;
+import com.badlogic.gdx.Gdx;
 
 public class SceneController {
     private final Game game;
@@ -17,6 +18,9 @@ public class SceneController {
         if (game.getScreen() != null) {
             System.out.println("Disposing current screen: " + game.getScreen().getClass().getSimpleName());
         }
+        // Clear the screen before switching to the new screen
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(Gdx.gl.GL_COLOR_BUFFER_BIT);
 
         // Switch to new screen
         String screenName = screen.getClass().getSimpleName();

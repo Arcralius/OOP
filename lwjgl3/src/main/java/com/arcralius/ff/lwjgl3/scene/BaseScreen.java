@@ -28,7 +28,7 @@ public abstract class BaseScreen implements Screen {
     public BaseScreen(IO_Controller ioController) {
         this.ioController = ioController;
         camera = new OrthographicCamera();
-        viewport = new FitViewport(800, 600, camera);
+        viewport = new FitViewport(800, 550, camera);
         batch = new SpriteBatch();
     }
 
@@ -88,6 +88,7 @@ public abstract class BaseScreen implements Screen {
 
         // Draw components
         batch.begin();
+        drawBackground(batch);
         for (ScreenComponent component : components) {
             component.render(batch);
         }
@@ -103,9 +104,18 @@ public abstract class BaseScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
-        viewport.update(width, height);
+        viewport.update(width, height, true);
+
+        camera.viewportWidth = viewport.getWorldWidth();
+        camera.viewportHeight = viewport.getWorldHeight();
         camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
         camera.update();
+    }
+
+    public void drawBackground(SpriteBatch batch) {
+        if (background != null) {
+            batch.draw(background, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
+        }
     }
 
     @Override

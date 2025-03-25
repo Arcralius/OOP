@@ -9,13 +9,13 @@ import com.arcralius.ff.lwjgl3.scene.EndScreen;
 import com.arcralius.ff.lwjgl3.scene.SceneController;
 import com.arcralius.ff.lwjgl3.input_output.IO_Controller;
 
+import java.util.Iterator;
 import java.util.List;
 
 public class CollisionController implements CollisionInterface {
     private GameplayScreen gameplayScreen;
     private IO_Controller ioController;
     private SceneController sceneController;
-
 
     public CollisionController(IO_Controller ioController, GameplayScreen gameplayScreen, SceneController sceneController) {
         this.ioController = ioController;
@@ -26,7 +26,9 @@ public class CollisionController implements CollisionInterface {
     @Override
     public void checkCollisions(BaseEntity player, List<BaseEntity> entityList) {
         try {
-            for (BaseEntity entity : entityList) {
+            Iterator<BaseEntity> iterator = entityList.iterator();
+            while (iterator.hasNext()) {
+                BaseEntity entity = iterator.next();
                 if (player != entity && player.getBoundary().overlaps(entity.getBoundary())) {
                     // Print debug info
                     System.out.println("Collision detected with entity type: " + entity.getClass().getSimpleName());
@@ -34,7 +36,7 @@ public class CollisionController implements CollisionInterface {
                     // Check if it's a food entity
                     if (entity instanceof FoodEntity) {
                         System.out.println("Food collision detected");
-                        handleFoodCollection(player, (FoodEntity) entity);
+                        handleFoodCollection(player, (FoodEntity) entity, iterator); // Pass iterator
                     } else if (entity instanceof NonPlayableEntity) {
                         // Handle regular NPC collision
                         handleCollision(player, entity);
@@ -61,7 +63,7 @@ public class CollisionController implements CollisionInterface {
         }
     }
 
-    private void handleFoodCollection(BaseEntity player, FoodEntity food) {
+    private void handleFoodCollection(BaseEntity player, FoodEntity food, Iterator<BaseEntity> iterator) { // Added iterator parameter
         try {
             if (gameplayScreen instanceof Gameplay_Specific_scene) {
                 Gameplay_Specific_scene exampleScreen = (Gameplay_Specific_scene) gameplayScreen;
@@ -72,12 +74,12 @@ public class CollisionController implements CollisionInterface {
 
             ioController.getAudioManager().playSoundEffect("item_collected");
 
-            // Safely remove the food entity
+            // Safely remove the food entity using the iterator
+            iterator.remove();
             gameplayScreen.getEntityController().removeEntity(food);
         } catch (Exception e) {
             System.err.println("Error in handleFoodCollection: " + e.getMessage());
             e.printStackTrace();
         }
     }
-
 }

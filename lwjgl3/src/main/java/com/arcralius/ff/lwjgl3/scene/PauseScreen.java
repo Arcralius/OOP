@@ -16,7 +16,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class PauseScreen extends BaseScreen {
@@ -45,19 +44,23 @@ public class PauseScreen extends BaseScreen {
     @Override
     public void show() {
         ioController.getDisplayManager().setCurrentScreen("PauseScreen");
-        ioController.getDisplayManager().setResolution(Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight());
 
-        stage = new Stage(new ScreenViewport());
+        stage = new Stage(viewport, batch);
         Gdx.input.setInputProcessor(stage);
 
         backgroundTexture = new Texture(Gdx.files.internal("Forest.png"));
         backgroundSprite = new Sprite(backgroundTexture);
-        backgroundSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        // Instantiate the UIComponentFactory with the font paths.
         uiFactory = new UIComponentFactory("fonts/ChangaOneRegular.ttf");
 
         setupUI();
+
+        // Scale the background sprite after it is created.
+        float scaleX = viewport.getWorldWidth() / backgroundSprite.getWidth();
+        float scaleY = viewport.getWorldHeight() / backgroundSprite.getHeight();
+        float scale = Math.max(scaleX, scaleY);
+
+        backgroundSprite.setSize(backgroundSprite.getWidth() * scale, backgroundSprite.getHeight() * scale);
     }
 
     private void setupUI() {
@@ -193,8 +196,16 @@ public class PauseScreen extends BaseScreen {
     @Override
     protected void draw() {
         batch.begin();
+
+        float scaleX = viewport.getWorldWidth() / backgroundSprite.getWidth();
+        float scaleY = viewport.getWorldHeight() / backgroundSprite.getHeight();
+        float scale = Math.max(scaleX, scaleY);
+
+        backgroundSprite.setSize(backgroundSprite.getWidth() * scale, backgroundSprite.getHeight() * scale);
+
         backgroundSprite.setPosition(0, 0);
         backgroundSprite.draw(batch);
+
         batch.end();
         stage.draw();
     }

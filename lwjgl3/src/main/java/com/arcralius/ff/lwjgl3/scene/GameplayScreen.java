@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameplayScreen extends BaseScreen {
-    private final TiledMap map;
-    private final OrthogonalTiledMapRenderer mapRenderer;
+    protected final TiledMap map;
+    protected final OrthogonalTiledMapRenderer mapRenderer;
     private final Texture backgroundTexture;
     private final Sprite backgroundSprite;
     private final MovementController movementController;
@@ -61,6 +61,10 @@ public class GameplayScreen extends BaseScreen {
         this.uiCamera = new OrthographicCamera();
         this.uiCamera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         this.uiBatch = new SpriteBatch();
+
+        camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
+        camera.update();
     }
 
 
@@ -123,25 +127,35 @@ public class GameplayScreen extends BaseScreen {
 
     @Override
     protected void draw() {
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(Gdx.gl.GL_COLOR_BUFFER_BIT);
+
+        // 1. Draw background
         batch.begin();
         backgroundSprite.draw(batch);
         batch.end();
+
+        // 2. Render the map
         mapRenderer.setView(camera);
         mapRenderer.render();
 
-
-
+        // 3. Draw entities
         entityController.draw(batch);
 
+        // 4. Draw collision message in world coordinates, relative to camera position
         batch.begin();
-        if (!collisionMessage.isEmpty()) {
-            font.draw(batch, collisionMessage, playableEntity.getX(), playableEntity.getY() + 50);
+        if (!collisionMessage.isEmpty() && playableEntity != null) {
+            float messageX = playableEntity.getX();
+            float messageY = playableEntity.getY() + 50;
+
+            font.draw(batch, collisionMessage, messageX, messageY);
         }
         batch.end();
 
+        // 5. Draw UI elements in screen coordinates
         uiBatch.setProjectionMatrix(uiCamera.combined);
         uiBatch.begin();
+        // No UI elements currently being drawn here, but this is where they would go.
         uiBatch.end();
     }
 
@@ -155,6 +169,10 @@ public class GameplayScreen extends BaseScreen {
         super.resize(width, height);
         uiCamera.setToOrtho(false, width, height);
         uiCamera.update();
+
+        camera.setToOrtho(false, width, height);
+        viewport.update(width, height, true);
+        camera.update();
     }
 
     @Override

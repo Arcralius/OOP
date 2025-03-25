@@ -17,7 +17,7 @@ public class GameMaster extends Game {
 
         // Initialize DisplayManager and set resolution
         ioController.getDisplayManager().initializeDisplay();
-        ioController.getDisplayManager().setResolution("1920x1080");
+        ioController.getDisplayManager().setResolution("800x550");
 
         // Load all audio files via IO_Controller
         ioController.getAudioManager().loadAllMusic();

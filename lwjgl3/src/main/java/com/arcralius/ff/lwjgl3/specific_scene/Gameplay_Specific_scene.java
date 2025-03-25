@@ -20,7 +20,6 @@ public class Gameplay_Specific_scene extends GameplayScreen {
     private int foodCollected = 0;
     private int totalFood;
     private BitmapFont scoreFont;
-    private BaseEntity enemy1, enemy2, enemy3;
 
     // UI elements
     private SpriteBatch uiBatch;
@@ -43,15 +42,10 @@ public class Gameplay_Specific_scene extends GameplayScreen {
         addComponent(foodInfoDisplay);
         totalFood = foodSystem.getTotalFoodCount();
         scoreFont = new BitmapFont();
-        scoreFont.getData().setScale(1.5f);
-
-
 
         // Initialize playable entity
         BaseEntity player = GameEntityBuilder.createEntity("playable", "player", "playable_character/playable_character_forward.png", 100, 100, 1000, 30, 30);
         entityController.addEntity(player);
-
-
 
         // Initialize enemies
         initialiseEnemies();
@@ -96,20 +90,24 @@ public class Gameplay_Specific_scene extends GameplayScreen {
 
             BaseEntity enemy = GameEntityBuilder.createEntity("non_playable", id, "enemy_food/burger.png", x, y, speed, 64, 64);
             entityController.addEntity(enemy);
-
-
         }
     }
 
-
     @Override
     protected void draw() {
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(Gdx.gl.GL_COLOR_BUFFER_BIT);
         super.draw(); // Calls GameplayScreen's draw method
 
         // Draw UI elements
         uiBatch.setProjectionMatrix(uiCamera.combined);
         uiBatch.begin();
-        scoreFont.draw(uiBatch, foodCollected + "/" + totalFood + " food collected", 20, Gdx.graphics.getHeight() - 20);
+
+        // Calculate font scale based on screen size
+        float scale = Math.min(uiCamera.viewportWidth / 800f, uiCamera.viewportHeight / 600f);
+        scoreFont.getData().setScale(1.5f * scale);
+
+        scoreFont.draw(uiBatch, foodCollected + "/" + totalFood + " food collected", 20, uiCamera.viewportHeight - 20);
 
         // Draw food info display if active
         if (foodInfoDisplay.isActive()) {
@@ -117,6 +115,13 @@ public class Gameplay_Specific_scene extends GameplayScreen {
         }
 
         uiBatch.end();
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        super.resize(width, height);
+        uiCamera.setToOrtho(false, width, height);
+        uiCamera.update();
     }
 
     @Override

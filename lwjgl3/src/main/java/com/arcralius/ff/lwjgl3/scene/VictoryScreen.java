@@ -10,6 +10,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -18,8 +21,14 @@ import java.util.Random;
 
 public class VictoryScreen extends BaseScreen {
     private final SceneController sceneController;
-    private final Texture background;
+    private final Texture backgroundTexture; // Change to Texture
+    private Sprite backgroundSprite; // Add Sprite
     private final BitmapFont font;
+    private GlyphLayout glyphLayout;
+    private boolean backgroundDrawn = false;
+    private float lastViewportWidth = 0;
+    private float lastViewportHeight = 0;
+    private SpriteBatch backgroundBatch; // Separate batch for background
 
     // Added for falling fruits
     private final List<FoodEntity> fallingFruits = new ArrayList<>();
@@ -37,30 +46,49 @@ public class VictoryScreen extends BaseScreen {
         super(ioController);
         this.sceneController = sceneController;
 
-        // Stop gameplay music and play game over music
         ioController.getAudioManager().stopMusic("victory_music");
         ioController.getAudioManager().playMusic("victory_music", true);
 
-        // Load assets
-        this.background = new Texture("menuBackground.png");
-        this.font = new BitmapFont(); // Customize font as needed
+        this.backgroundTexture = new Texture("menuBackground.png");
+        this.backgroundSprite = new Sprite(backgroundTexture);
+        this.font = new BitmapFont();
+        this.glyphLayout = new GlyphLayout();
+        this.backgroundBatch = new SpriteBatch();
     }
 
     @Override
     public void render(float delta) {
-        update(delta); // Call update for game logic
+        // Force clear color and clear buffer
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(Gdx.gl.GL_COLOR_BUFFER_BIT);
+
+        update(delta);
+        camera.update();
+
+        // Draw background using separate batch
+        backgroundBatch.setProjectionMatrix(camera.combined);
+        backgroundBatch.begin();
+        if (!backgroundDrawn) {
+            backgroundSprite.setSize((int)viewport.getWorldWidth(), (int)viewport.getWorldHeight()); // Integer size
+            backgroundDrawn = true;
+            lastViewportWidth = viewport.getWorldWidth();
+            lastViewportHeight = viewport.getWorldHeight();
+        }
+        backgroundSprite.draw(backgroundBatch);
+        backgroundBatch.end();
+
+        // Draw text and fruits using main batch
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
-        draw(); // Call draw for rendering
+        draw();
         batch.end();
     }
 
     @Override
     protected void update(float delta) {
-        handleInput(); // Handle user input during the game loop
+        handleInput();
         ioController.update();
 
-        // Update falling fruits
         spawnFruitIfNeeded();
         for (Iterator<FoodEntity> it = fallingFruits.iterator(); it.hasNext(); ) {
             FoodEntity fruit = it.next();
@@ -73,11 +101,20 @@ public class VictoryScreen extends BaseScreen {
 
     @Override
     protected void draw() {
-        batch.draw(background, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
-        font.draw(batch, "Victory!", viewport.getWorldWidth() / 2 - 50, viewport.getWorldHeight() / 2);
-        font.draw(batch, "Press ESC to Exit or R to Restart", viewport.getWorldWidth() / 2 - 100, viewport.getWorldHeight() / 2 - 30);
+        String victoryText = "Victory!";
+        String pressText = "Press ESC to Exit or R to Restart";
 
-        // Draw falling fruits
+        glyphLayout.setText(font, victoryText);
+        float victoryX = viewport.getWorldWidth() / 2 - glyphLayout.width / 2;
+        float victoryY = viewport.getWorldHeight() / 2;
+
+        glyphLayout.setText(font, pressText);
+        float pressX = viewport.getWorldWidth() / 2 - glyphLayout.width / 2;
+        float pressY = victoryY - glyphLayout.height;
+
+        font.draw(batch, victoryText, victoryX, victoryY);
+        font.draw(batch, pressText, pressX, pressY);
+
         for (FoodEntity fruit : fallingFruits) {
             batch.draw(fruit.getTextureObject(), fruit.getX(), fruit.getY(), fruit.getWidth(), fruit.getHeight());
         }
@@ -106,9 +143,18 @@ public class VictoryScreen extends BaseScreen {
     }
 
     @Override
+    public void resize(int width, int height) {
+        super.resize(width, height);
+        if (lastViewportWidth != viewport.getWorldWidth() || lastViewportHeight != viewport.getWorldHeight()) {
+            backgroundDrawn = false;
+        }
+    }
+
+    @Override
     public void dispose() {
         super.dispose();
-        background.dispose();
+        backgroundTexture.dispose();
         font.dispose();
+        backgroundBatch.dispose();
     }
 }

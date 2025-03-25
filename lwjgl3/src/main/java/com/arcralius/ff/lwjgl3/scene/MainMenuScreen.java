@@ -19,19 +19,12 @@ import com.badlogic.gdx.utils.ScreenUtils;
 
 public class MainMenuScreen extends BaseScreen {
     private Stage stage;
-    private TextureAtlas atlas;
-    private Skin skin;
     private final SceneController sceneController;
-
     // Background scrolling
     private Texture backgroundTexture;
     private Sprite backgroundSprite1, backgroundSprite2;
     private float backgroundX1 = 0, backgroundX2;
-
     private UIComponentFactory uiFactory;
-
-
-
 
     public MainMenuScreen(IO_Controller ioController, SceneController sceneController) {
         super(ioController);
@@ -48,11 +41,8 @@ public class MainMenuScreen extends BaseScreen {
 
     @Override
     public void show() {
-        // Update DisplayManager resolution when menu is loaded
-        ioController.getDisplayManager().setResolution(Gdx.graphics.getWidth() + "x" + Gdx.graphics.getHeight());
-
         // Initialize UI handling
-        stage = new Stage(new ScreenViewport());
+        stage = new Stage(viewport, batch);
         Gdx.input.setInputProcessor(stage);
 
         // Load the background texture
@@ -61,17 +51,23 @@ public class MainMenuScreen extends BaseScreen {
         // Initialize background sprites for scrolling
         backgroundSprite1 = new Sprite(backgroundTexture);
         backgroundSprite2 = new Sprite(backgroundTexture);
-        backgroundSprite1.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        backgroundSprite2.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-        // Position the second sprite to the right of the first one
-        backgroundX2 = Gdx.graphics.getWidth();
 
         // Instantiate the UIComponentFactory with the atlas and font paths.
         uiFactory = new UIComponentFactory("fonts/ChangaOneRegular.ttf");
 
         // Initialize UI elements
         setupUI();
+
+        // Scale the background sprites after they are created.
+        float scaleX = viewport.getWorldWidth() / backgroundSprite1.getWidth();
+        float scaleY = viewport.getWorldHeight() / backgroundSprite1.getHeight();
+        float scale = Math.max(scaleX, scaleY);
+
+        backgroundSprite1.setSize(backgroundSprite1.getWidth() * scale, backgroundSprite1.getHeight() * scale);
+        backgroundSprite2.setSize(backgroundSprite2.getWidth() * scale, backgroundSprite2.getHeight() * scale);
+
+        // Position the second sprite to the right of the first one, after scaling.
+        backgroundX2 = backgroundSprite1.getWidth();
     }
 
     private void setupUI() {
@@ -125,15 +121,25 @@ public class MainMenuScreen extends BaseScreen {
 
     @Override
     protected void draw() {
-        // Draw the scrolling background
         batch.begin();
+
+        float scaleX = viewport.getWorldWidth() / backgroundSprite1.getWidth();
+        float scaleY = viewport.getWorldHeight() / backgroundSprite1.getHeight();
+        float scale = Math.max(scaleX, scaleY); // Scale to fill the larger dimension
+
+        backgroundSprite1.setSize(backgroundSprite1.getWidth() * scale, backgroundSprite1.getHeight() * scale);
+        backgroundSprite2.setSize(backgroundSprite2.getWidth() * scale, backgroundSprite2.getHeight() * scale);
+
+        // Calculate the scaled width for positioning
+        float scaledWidth = backgroundSprite1.getWidth();
+
         backgroundSprite1.setPosition(backgroundX1, 0);
         backgroundSprite2.setPosition(backgroundX2, 0);
+
         backgroundSprite1.draw(batch);
         backgroundSprite2.draw(batch);
-        batch.end();
 
-        // Draw UI elements
+        batch.end();
         stage.draw();
     }
 
@@ -141,17 +147,19 @@ public class MainMenuScreen extends BaseScreen {
     public void render(float delta) {
         ScreenUtils.clear(0, 0, 0, 1);
 
-        // Scroll the background
         float SCROLL_SPEED = 50f;
         backgroundX1 -= SCROLL_SPEED * delta;
         backgroundX2 -= SCROLL_SPEED * delta;
 
+        // Calculate the scaled width for resetting positions
+        float scaledWidth = backgroundSprite1.getWidth();
+
         // Reset background positions if they go off-screen
-        if (backgroundX1 + backgroundSprite1.getWidth() <= 0) {
-            backgroundX1 = backgroundX2 + backgroundSprite2.getWidth();
+        if (backgroundX1 + scaledWidth <= 0) {
+            backgroundX1 = backgroundX2 + scaledWidth;
         }
-        if (backgroundX2 + backgroundSprite2.getWidth() <= 0) {
-            backgroundX2 = backgroundX1 + backgroundSprite1.getWidth();
+        if (backgroundX2 + scaledWidth <= 0) {
+            backgroundX2 = backgroundX1 + scaledWidth;
         }
 
         draw();

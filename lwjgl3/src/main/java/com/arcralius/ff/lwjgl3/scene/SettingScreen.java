@@ -17,8 +17,6 @@ import com.badlogic.gdx.utils.ScreenUtils;
 
 public class SettingScreen extends BaseScreen {
     private Stage stage;
-    private TextureAtlas atlas;
-    private Skin skin;
     private final SceneController sceneController;
     private Texture backgroundTexture;
     private Sprite backgroundSprite1, backgroundSprite2;
@@ -43,21 +41,28 @@ public class SettingScreen extends BaseScreen {
 
     @Override
     public void show() {
-        stage = new Stage(new ScreenViewport());
+        stage = new Stage(viewport, batch);
         Gdx.input.setInputProcessor(stage);
 
         backgroundTexture = new Texture(Gdx.files.internal("menuBackground.png"));
         backgroundSprite1 = new Sprite(backgroundTexture);
         backgroundSprite2 = new Sprite(backgroundTexture);
-        backgroundSprite1.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        backgroundSprite2.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        backgroundX2 = Gdx.graphics.getWidth();
-
 
         // Instantiate the UIComponentFactory with font paths.
         uiFactory = new UIComponentFactory("fonts/ChangaOneRegular.ttf");
 
         setupUI();
+
+        // Scale the background sprites after they are created.
+        float scaleX = viewport.getWorldWidth() / backgroundSprite1.getWidth();
+        float scaleY = viewport.getWorldHeight() / backgroundSprite1.getHeight();
+        float scale = Math.max(scaleX, scaleY);
+
+        backgroundSprite1.setSize(backgroundSprite1.getWidth() * scale, backgroundSprite1.getHeight() * scale);
+        backgroundSprite2.setSize(backgroundSprite2.getWidth() * scale, backgroundSprite2.getHeight() * scale);
+
+        // Position the second sprite to the right of the first one, after scaling.
+        backgroundX2 = backgroundSprite1.getWidth();
     }
 
     private void setupUI() {
@@ -161,10 +166,22 @@ public class SettingScreen extends BaseScreen {
     @Override
     protected void draw() {
         batch.begin();
+
+        float scaleX = viewport.getWorldWidth() / backgroundSprite1.getWidth();
+        float scaleY = viewport.getWorldHeight() / backgroundSprite1.getHeight();
+        float scale = Math.max(scaleX, scaleY);
+
+        backgroundSprite1.setSize(backgroundSprite1.getWidth() * scale, backgroundSprite1.getHeight() * scale);
+        backgroundSprite2.setSize(backgroundSprite2.getWidth() * scale, backgroundSprite2.getHeight() * scale);
+
+        float scaledWidth = backgroundSprite1.getWidth();
+
         backgroundSprite1.setPosition(backgroundX1, 0);
         backgroundSprite2.setPosition(backgroundX2, 0);
+
         backgroundSprite1.draw(batch);
         backgroundSprite2.draw(batch);
+
         batch.end();
         stage.draw();
     }
@@ -177,11 +194,13 @@ public class SettingScreen extends BaseScreen {
         backgroundX1 -= SCROLL_SPEED * delta;
         backgroundX2 -= SCROLL_SPEED * delta;
 
-        if (backgroundX1 + backgroundSprite1.getWidth() <= 0) {
-            backgroundX1 = backgroundX2 + backgroundSprite2.getWidth();
+        float scaledWidth = backgroundSprite1.getWidth();
+
+        if (backgroundX1 + scaledWidth <= 0) {
+            backgroundX1 = backgroundX2 + scaledWidth;
         }
-        if (backgroundX2 + backgroundSprite2.getWidth() <= 0) {
-            backgroundX2 = backgroundX1 + backgroundSprite1.getWidth();
+        if (backgroundX2 + scaledWidth <= 0) {
+            backgroundX2 = backgroundX1 + scaledWidth;
         }
 
         draw();

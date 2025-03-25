@@ -4,17 +4,22 @@ import com.arcralius.ff.lwjgl3.scene.BaseScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.OrthographicCamera; // Import OrthographicCamera
 
 public class FoodInfoDisplay implements ScreenComponent {
     private String foodType;
     private Texture foodImage;
     private float displayTime;
-    private float maxDisplayTime = 3.0f; // Display info by set time
+    private float maxDisplayTime = 3.0f;
     private boolean isActive = false;
     private BaseScreen screen;
+    private OrthographicCamera camera; // Add camera field
+    private SpriteBatch foodInfoBatch; // Separate batch
 
     public FoodInfoDisplay() {
         System.out.println("FoodInfoDisplay created");
+        camera = new OrthographicCamera(); // Initialize camera
+        foodInfoBatch = new SpriteBatch(); // Initialize separate batch
     }
 
     @Override
@@ -89,16 +94,30 @@ public class FoodInfoDisplay implements ScreenComponent {
     public void render(SpriteBatch batch) {
         if (isActive && foodImage != null) {
             try {
-                // Fixed size for all food card images
-                float fixedWidth = 600;  // Width in pixels
-                float fixedHeight = 160; // Height in pixels
+                camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+                camera.update();
+                foodInfoBatch.setProjectionMatrix(camera.combined); // Use separate batch
 
-                // Center the image
-                float imgX = Gdx.graphics.getWidth()/2f - fixedWidth/2f;
-                float imgY = Gdx.graphics.getHeight()/2f - fixedHeight/2f;
+                float scaleX = camera.viewportWidth / 800f;
+                float scaleY = camera.viewportHeight / 600f;
+                float scale = Math.min(scaleX, scaleY);
 
-                // Draw with fixed size
-                batch.draw(foodImage, imgX, imgY, fixedWidth, fixedHeight);
+                float baseWidth = 600;
+                float baseHeight = 160;
+
+                float scaledWidth = baseWidth * scale;
+                float scaledHeight = baseHeight * scale;
+
+                float imgX = camera.viewportWidth / 2f - scaledWidth / 2f;
+                float imgY = 50 * scale; // adjust to control dist from bottom of screen
+
+                foodInfoBatch.begin(); // Begin separate batch
+                foodInfoBatch.draw(foodImage, imgX, imgY, scaledWidth, scaledHeight);
+                foodInfoBatch.end(); // End separate batch
+
+                System.out.println("FoodInfoDisplay rendered: " + foodType +
+                    ", Texture ID: " + foodImage.getTextureObjectHandle() +
+                    ", Batch: " + foodInfoBatch); // Log batch instance
 
             } catch (Exception e) {
                 System.err.println("Error rendering food info: " + e.getMessage());
@@ -114,6 +133,9 @@ public class FoodInfoDisplay implements ScreenComponent {
         if (foodImage != null) {
             foodImage.dispose();
             foodImage = null;
+        }
+        if (foodInfoBatch != null) {
+            foodInfoBatch.dispose(); // Dispose separate batch
         }
     }
 
