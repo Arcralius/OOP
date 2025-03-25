@@ -159,16 +159,17 @@ public class Gameplay_Specific_scene extends GameplayScreen {
 
         shapeRenderer.end();
 
-        // --- Draw "HP" label above the bar, centered ---
+        // --- Draw HP value instead of the "HP" label, centered ---
         uiBatch.begin();
-        scoreFont.getData().setScale(screenWidth * 0.0025f);
-        GlyphLayout layout = new GlyphLayout(scoreFont, "HP");
+        scoreFont.getData().setScale(screenWidth * 0.0025f); // Adjust font size relative to screen width
+        String hpText = String.format("%.0f / %.0f", currentHP, maxHP); // Display current HP value
+        GlyphLayout layout = new GlyphLayout(scoreFont, hpText);
         float textWidth = layout.width;
-        float textX = (screenWidth - textWidth) / 2;
-        float textY = barY + hpBarHeight + screenHeight * 0.009f;
+        float textX = (screenWidth - textWidth) / 2; // Center the text
+        float textY = barY + hpBarHeight + screenHeight * 0.009f; // Position it above the bar
 
         scoreFont.setColor(Color.WHITE);
-        scoreFont.draw(uiBatch, "HP", textX, textY);
+        scoreFont.draw(uiBatch, hpText, textX, textY); // Draw HP value
         uiBatch.end();
     }
 

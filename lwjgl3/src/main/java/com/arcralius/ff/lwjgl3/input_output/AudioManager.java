@@ -32,6 +32,7 @@ public class AudioManager {
 
         // Load the collection sound as a sound effect, not music
         loadSoundEffect("item_collected", "music/item_collected.mp3");
+        loadSoundEffect("hit_sound", "music/hit_sound.mp3");;
     }
 
     // New method to load sound effects

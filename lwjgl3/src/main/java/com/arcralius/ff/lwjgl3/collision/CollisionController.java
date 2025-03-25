@@ -12,6 +12,7 @@ import com.arcralius.ff.lwjgl3.input_output.IO_Controller;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class CollisionController implements CollisionInterface {
     private GameplayScreen gameplayScreen;
@@ -54,16 +55,21 @@ public class CollisionController implements CollisionInterface {
         String aString = a.getId();
         String bString = b.getId();
 
-
         // Check if the player is invincible
         if (a.canTakeDamage()) {
-            a.setHP(a.getHP() - 10);
+            int damage = ThreadLocalRandom.current().nextInt(10, 41); // Generates a random number between 10 and 45
+            a.setHP(a.getHP() - damage);
             a.registerHit(); // Update last hit time
-            System.out.println("HP = " + a.getHP());
+            ioController.getAudioManager().playSoundEffect("hit_sound");
+
+            System.out.println("Player took " + damage + " damage. HP = " + a.getHP());
             gameplayScreen.displayCollisionMessage("Invincible!");
 
-            if (a.getHP() == 0) {
+            if (a.getHP() <= 0) {
                 sceneController.changeScreen(new EndScreen(ioController, sceneController));
+            }
+            if(damage > 30){
+                gameplayScreen.displayCollisionMessage("Invincible! Critical Hit!");
             }
         }
     }
