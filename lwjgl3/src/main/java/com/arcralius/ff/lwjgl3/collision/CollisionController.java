@@ -3,6 +3,7 @@ package com.arcralius.ff.lwjgl3.collision;
 import com.arcralius.ff.lwjgl3.entity.BaseEntity;
 import com.arcralius.ff.lwjgl3.entity.FoodEntity;
 import com.arcralius.ff.lwjgl3.entity.NonPlayableEntity;
+import com.arcralius.ff.lwjgl3.entity.PlayableEntity;
 import com.arcralius.ff.lwjgl3.specific_scene.Gameplay_Specific_scene;
 import com.arcralius.ff.lwjgl3.scene.GameplayScreen;
 import com.arcralius.ff.lwjgl3.scene.EndScreen;
@@ -17,6 +18,7 @@ public class CollisionController implements CollisionInterface {
     private IO_Controller ioController;
     private SceneController sceneController;
 
+
     public CollisionController(IO_Controller ioController, GameplayScreen gameplayScreen, SceneController sceneController) {
         this.ioController = ioController;
         this.gameplayScreen = gameplayScreen;
@@ -30,8 +32,7 @@ public class CollisionController implements CollisionInterface {
             while (iterator.hasNext()) {
                 BaseEntity entity = iterator.next();
                 if (player != entity && player.getBoundary().overlaps(entity.getBoundary())) {
-                    // Print debug info
-                    System.out.println("Collision detected with entity type: " + entity.getClass().getSimpleName());
+
 
                     // Check if it's a food entity
                     if (entity instanceof FoodEntity) {
@@ -39,7 +40,7 @@ public class CollisionController implements CollisionInterface {
                         handleFoodCollection(player, (FoodEntity) entity, iterator); // Pass iterator
                     } else if (entity instanceof NonPlayableEntity) {
                         // Handle regular NPC collision
-                        handleCollision(player, entity);
+                        handleCollision((PlayableEntity) player, entity);
                     }
                 }
             }
@@ -49,17 +50,21 @@ public class CollisionController implements CollisionInterface {
         }
     }
 
-    @Override
-    public void handleCollision(BaseEntity a, BaseEntity b) {
+    public void handleCollision(PlayableEntity a, BaseEntity b) {
         String aString = a.getId();
         String bString = b.getId();
-        System.out.println("Collision detected between " + aString + " and " + bString);
-        gameplayScreen.displayCollisionMessage("Collided with " + bString + "!");
 
-        System.out.println("Entity ID: " + b.getId()); // Debugging
-        if ("enemy 3".equals(bString)) {
-            System.out.println("Collision with entity 3 detected! Switching to EndScreen...");
-            sceneController.changeScreen(new EndScreen(ioController, sceneController));
+
+        // Check if the player is invincible
+        if (a.canTakeDamage()) {
+            a.setHP(a.getHP() - 10);
+            a.registerHit(); // Update last hit time
+            System.out.println("HP = " + a.getHP());
+            gameplayScreen.displayCollisionMessage("Invincible!");
+
+            if (a.getHP() == 0) {
+                sceneController.changeScreen(new EndScreen(ioController, sceneController));
+            }
         }
     }
 
@@ -82,4 +87,5 @@ public class CollisionController implements CollisionInterface {
             e.printStackTrace();
         }
     }
+
 }

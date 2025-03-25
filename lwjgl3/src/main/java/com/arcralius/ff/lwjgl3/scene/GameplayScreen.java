@@ -82,7 +82,7 @@ public class GameplayScreen extends BaseScreen {
 
     public void displayCollisionMessage(String message) {
         this.collisionMessage = message;
-        this.collisionTimer = 2.0f;
+        this.collisionTimer = 1.85f;
     }
 
     private void handleInput() {
