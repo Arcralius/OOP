@@ -80,6 +80,7 @@ public class MainMenuScreen extends BaseScreen {
         buttonPlay.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                dispose();
                 sceneController.changeScreen(new Gameplay_Specific_scene(ioController, sceneController, new MovementController(ioController, camera)));
             }
         });
@@ -89,6 +90,7 @@ public class MainMenuScreen extends BaseScreen {
         buttonSettings.pad(20, 50, 20, 50);
         buttonSettings.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
+                dispose();
                 sceneController.changeScreen(new SettingScreen(ioController, sceneController));
             }
         });
