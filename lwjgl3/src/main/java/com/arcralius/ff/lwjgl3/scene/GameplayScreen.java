@@ -52,9 +52,9 @@ public class GameplayScreen extends BaseScreen {
 
         this.map = new TmxMapLoader().load("background.tmx");
         this.mapRenderer = new OrthogonalTiledMapRenderer(map, batch);
-        this.backgroundTexture = new Texture("plains.png");
-        this.backgroundSprite = new Sprite(backgroundTexture);
-        backgroundSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        //this.backgroundTexture = new Texture("plains.png");
+        //this.backgroundSprite = new Sprite(backgroundTexture);
+        //backgroundSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         // Removed playable entity initialization
         font = new BitmapFont();
