@@ -3,14 +3,12 @@ package com.arcralius.ff.lwjgl3.scene;
 import com.arcralius.ff.lwjgl3.input_output.IO_Controller;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Slider;
@@ -23,14 +21,14 @@ import com.badlogic.gdx.utils.ScreenUtils;
 
 public class PauseScreen extends BaseScreen {
     private Stage stage;
-    private TextureAtlas atlas;
-    private Skin skin;
+    private ImageButton buttonToggleMute;
+    private TextureRegionDrawable muteDrawable;
+    private TextureRegionDrawable unmuteDrawable;
     private final SceneController sceneController;
     private final GameplayScreen gameplayScreen;
-    private TextButton buttonToggleMute;
     private Label volumeLabel;
     private Slider volumeSlider;
-
+    private float lastVolume;
     private Texture backgroundTexture;
     private Sprite backgroundSprite;
 
@@ -41,6 +39,7 @@ public class PauseScreen extends BaseScreen {
         super(ioController);
         this.sceneController = sceneController;
         this.gameplayScreen = gameplayScreen;
+        this.lastVolume = ioController.getAudioManager().getVolume();
     }
 
     @Override
@@ -51,23 +50,22 @@ public class PauseScreen extends BaseScreen {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
-        backgroundTexture = new Texture(Gdx.files.internal("gameplay_background.png"));
+        backgroundTexture = new Texture(Gdx.files.internal("Forest.png"));
         backgroundSprite = new Sprite(backgroundTexture);
         backgroundSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        // Instantiate the UIComponentFactory with the atlas and font paths.
-
-        uiFactory = new UIComponentFactory("button.atlas", "white.fnt");
+        // Instantiate the UIComponentFactory with the font paths.
+        uiFactory = new UIComponentFactory("fonts/ChangaOneRegular.ttf");
 
         setupUI();
     }
 
     private void setupUI() {
-        // Create the volume label using the factory.
-        volumeLabel = uiFactory.createLabel(getVolumeText());
+        // Create the volume label
+        volumeLabel = uiFactory.createLabel(getVolumeText(), UIComponentFactory.FRENCH_BEIGE, UIComponentFactory.boxDrawable);
 
-        // Create buttons using the factory.
-        TextButton buttonResume = uiFactory.createTextButton("Resume Game");
+        // Play Button
+        ImageButton buttonResume = uiFactory.createImageButton("play_icon.png");
         buttonResume.pad(20, 50, 20, 50);
         buttonResume.addListener(new ClickListener() {
             @Override
@@ -77,7 +75,11 @@ public class PauseScreen extends BaseScreen {
             }
         });
 
-        buttonToggleMute = uiFactory.createTextButton(ioController.getAudioManager().isMuted() ? "Unmute Audio" : "Mute Audio");
+        // Mute/Unmute Button
+        muteDrawable = new TextureRegionDrawable(new TextureRegion(new Texture("SoundOff.png")));
+        unmuteDrawable = new TextureRegionDrawable(new TextureRegion(new Texture("SoundOn.png")));
+
+        buttonToggleMute = new ImageButton(ioController.getAudioManager().isMuted() ? muteDrawable : unmuteDrawable);
         buttonToggleMute.pad(20, 50, 20, 50);
         buttonToggleMute.addListener(new ClickListener() {
             @Override
@@ -86,7 +88,8 @@ public class PauseScreen extends BaseScreen {
             }
         });
 
-        TextButton buttonQuit = uiFactory.createTextButton("Quit");
+        // Quit Button
+        TextButton buttonQuit = uiFactory.createTextButton("Quit", UIComponentFactory.FRENCH_BEIGE, UIComponentFactory.boxDrawable);
         buttonQuit.pad(20, 50, 20, 50);
         buttonQuit.addListener(new ClickListener() {
             @Override
@@ -95,7 +98,7 @@ public class PauseScreen extends BaseScreen {
             }
         });
 
-        // Setup slider style as before (using external slider textures).
+        // Slider Setup
         Texture sliderTexture = new Texture(Gdx.files.internal("music/slide_horizontal_grey.png"));
         TextureRegion sliderTextureRegion = new TextureRegion(sliderTexture);
         TextureRegionDrawable sliderGreyDrawable = new TextureRegionDrawable(sliderTextureRegion);
@@ -110,46 +113,67 @@ public class PauseScreen extends BaseScreen {
 
         volumeSlider = new Slider(0, 1, 0.01f, false, sliderStyle);
         volumeSlider.setValue(ioController.getAudioManager().getVolume());
+        volumeSlider.setWidth(200);
         volumeSlider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 float sliderValue = volumeSlider.getValue();
                 ioController.getAudioManager().setVolume(sliderValue);
                 updateVolumeLabel();
+                lastVolume = sliderValue;
             }
         });
 
-        // Build tables for layout.
-        Table volumeLabelTable = new Table();
-        volumeLabelTable.add(volumeLabel).center();
+        // Initial slider value based on mute state
+        if (ioController.getAudioManager().isMuted()) {
+            volumeSlider.setValue(0);
+        } else {
+            volumeSlider.setValue(ioController.getAudioManager().getVolume());
+        }
 
-        Table sliderRow = new Table();
-        sliderRow.add(volumeSlider).width(200);
-
-        Table centerRow = new Table();
-        centerRow.add(buttonResume).fillX().uniformX();
-        centerRow.row().padTop(20);
-        centerRow.add(buttonToggleMute).fillX().uniformX();
-
-        Table quitRow = new Table();
-        quitRow.add(buttonQuit).fillX().uniformX();
-
+        // Main UI Layout
         Table table = new Table();
         table.setFillParent(true);
-        table.add(centerRow).center().padTop(20);
-        table.row().padTop(20);
-        table.add(volumeLabelTable).center().padTop(20);
-        table.row().padTop(10);
-        table.add(sliderRow).center();
-        table.row().padTop(20);
-        table.add(quitRow).center().padBottom(20);
+        table.center();
 
+        // Top row (Play Button)
+        table.add(buttonResume).center().padBottom(30);
+        table.row();
+
+        // Middle row (Mute Button & Volume Label)
+        Table volumeTable = new Table();
+        volumeTable.add(buttonToggleMute).left().padRight(30);
+        volumeTable.add(volumeLabel).right();
+        table.add(volumeTable).center().padBottom(10);
+        table.row();
+
+        // Volume Slider Row
+        table.add(volumeSlider).width(200).center().padBottom(30);
+        table.row();
+
+        // Bottom row (Quit Button)
+        table.add(buttonQuit).center().padBottom(10);
+
+        // Add table to stage
         stage.addActor(table);
     }
 
+
     private void toggleAudio() {
+        boolean isMuted = ioController.getAudioManager().isMuted();
         ioController.getAudioManager().toggleMute();
-        buttonToggleMute.setText(ioController.getAudioManager().isMuted() ? "Unmute Audio" : "Mute Audio");
+        buttonToggleMute.getStyle().imageUp = isMuted ? unmuteDrawable : muteDrawable;
+
+        if (ioController.getAudioManager().isMuted()) {
+            lastVolume = volumeSlider.getValue();
+            volumeSlider.setValue(0);
+        } else {
+            volumeSlider.setValue(lastVolume);
+        }
+
+        volumeSlider.invalidateHierarchy();
+        volumeSlider.layout();
+
         updateVolumeLabel();
     }
 

@@ -47,9 +47,6 @@ public class Gameplay_Specific_scene extends GameplayScreen {
 
 
 
-
-
-
         // Initialize playable entity
         BaseEntity player = GameEntityBuilder.createEntity("playable", "player", "playable_character/playable_character_forward.png", 100, 100, 1000, 30, 30);
         entityController.addEntity(player);
@@ -97,7 +94,7 @@ public class Gameplay_Specific_scene extends GameplayScreen {
             float y = positions[i][1];
             float speed = positions[i][2];
 
-            BaseEntity enemy = GameEntityBuilder.createEntity("non_playable", id, "droplet.png", x, y, speed, 32, 32);
+            BaseEntity enemy = GameEntityBuilder.createEntity("non_playable", id, "enemy_food/burger.png", x, y, speed, 64, 64);
             entityController.addEntity(enemy);
 
 

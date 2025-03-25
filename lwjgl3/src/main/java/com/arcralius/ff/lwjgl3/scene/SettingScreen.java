@@ -3,7 +3,6 @@ package com.arcralius.ff.lwjgl3.scene;
 import com.arcralius.ff.lwjgl3.input_output.IO_Controller;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -55,8 +54,8 @@ public class SettingScreen extends BaseScreen {
         backgroundX2 = Gdx.graphics.getWidth();
 
 
-        // Instantiate the UIComponentFactory with the atlas and font paths.
-        uiFactory = new UIComponentFactory("button.atlas", "white.fnt");
+        // Instantiate the UIComponentFactory with font paths.
+        uiFactory = new UIComponentFactory("fonts/ChangaOneRegular.ttf");
 
         setupUI();
     }
@@ -66,10 +65,11 @@ public class SettingScreen extends BaseScreen {
         table.setFillParent(true);
 
         // Create the volume label using the factory.
-        volumeLabel = uiFactory.createLabel(getVolumeText());
+        volumeLabel = uiFactory.createLabel(getVolumeText(), UIComponentFactory.FRENCH_BEIGE, UIComponentFactory.boxDrawable);
+        volumeLabel.pack();
 
         // Create and configure the Toggle Mute button.
-        buttonToggleMute = uiFactory.createTextButton(ioController.getAudioManager().isMuted() ? "Unmute Audio" : "Mute Audio");
+        buttonToggleMute = uiFactory.createTextButton(ioController.getAudioManager().isMuted() ? "Unmute Audio" : "Mute Audio", UIComponentFactory.FRENCH_BEIGE, UIComponentFactory.boxDrawable);
         buttonToggleMute.pad(20, 50, 20, 50);
         buttonToggleMute.addListener(new ClickListener() {
             @Override
@@ -79,7 +79,7 @@ public class SettingScreen extends BaseScreen {
         });
 
         // Create and configure the Volume Up button.
-        buttonVolumeUp = uiFactory.createTextButton("Volume Up");
+        buttonVolumeUp = uiFactory.createTextButton("Volume Up", UIComponentFactory.FRENCH_BEIGE, UIComponentFactory.boxDrawable);
         buttonVolumeUp.pad(20);
         buttonVolumeUp.addListener(new ClickListener() {
             @Override
@@ -92,7 +92,7 @@ public class SettingScreen extends BaseScreen {
         });
 
         // Create and configure the Volume Down button.
-        buttonVolumeDown = uiFactory.createTextButton("Volume Down");
+        buttonVolumeDown = uiFactory.createTextButton("Volume Down", UIComponentFactory.FRENCH_BEIGE, UIComponentFactory.boxDrawable);
         buttonVolumeDown.pad(20);
         buttonVolumeDown.addListener(new ClickListener() {
             @Override
@@ -105,7 +105,7 @@ public class SettingScreen extends BaseScreen {
         });
 
         // Create and configure the Back button.
-        TextButton buttonBack = uiFactory.createTextButton("Back to Main Menu");
+        TextButton buttonBack = uiFactory.createTextButton("Back to Main Menu", UIComponentFactory.FRENCH_BEIGE, UIComponentFactory.boxDrawable);
         buttonBack.pad(20, 50, 20, 50);
         buttonBack.addListener(new ClickListener() {
             @Override

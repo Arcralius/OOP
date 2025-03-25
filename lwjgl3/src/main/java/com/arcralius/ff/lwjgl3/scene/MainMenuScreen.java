@@ -5,10 +5,10 @@ import com.arcralius.ff.lwjgl3.input_output.IO_Controller;
 import com.arcralius.ff.lwjgl3.movement.MovementController;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -68,7 +68,7 @@ public class MainMenuScreen extends BaseScreen {
         backgroundX2 = Gdx.graphics.getWidth();
 
         // Instantiate the UIComponentFactory with the atlas and font paths.
-        uiFactory = new UIComponentFactory("button.atlas", "white.fnt");
+        uiFactory = new UIComponentFactory("fonts/ChangaOneRegular.ttf");
 
         // Initialize UI elements
         setupUI();
@@ -79,7 +79,7 @@ public class MainMenuScreen extends BaseScreen {
         table.setFillParent(true); // Properly centers elements
 
         // Create Play Button using the factory
-        TextButton buttonPlay = uiFactory.createTextButton("Start Game");
+        ImageButton buttonPlay = uiFactory.createImageButton("play_button.png");
         buttonPlay.pad(20, 50, 20, 50);
         buttonPlay.addListener(new ClickListener() {
             @Override
@@ -89,7 +89,7 @@ public class MainMenuScreen extends BaseScreen {
         });
 
         // Create Settings Button using the factory
-        TextButton buttonSettings = uiFactory.createTextButton("Settings");
+        TextButton buttonSettings = uiFactory.createTextButton("Settings", UIComponentFactory.FRENCH_BEIGE, UIComponentFactory.boxDrawable);
         buttonSettings.pad(20, 50, 20, 50);
         buttonSettings.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
@@ -98,7 +98,7 @@ public class MainMenuScreen extends BaseScreen {
         });
 
         // Create Quit Button using the factory
-        TextButton buttonQuit = uiFactory.createTextButton("Quit");
+        TextButton buttonQuit = uiFactory.createTextButton("Quit", UIComponentFactory.FRENCH_BEIGE, UIComponentFactory.boxDrawable);
         buttonQuit.pad(20, 50, 20, 50);
         buttonQuit.addListener(new ClickListener() {
             @Override
