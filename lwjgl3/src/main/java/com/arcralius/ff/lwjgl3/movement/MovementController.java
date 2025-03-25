@@ -58,14 +58,14 @@ public class MovementController {
         // Boundary restrictions
         if (newX < 0) {
             newX = 0;
-        } else if (newX > 940) {
-            newX = 940;
+        } else if (newX > 924) {
+            newX = 924;
         }
 
         if (newY < 0) {
             newY = 0;
-        } else if (newY > 940) {
-            newY = 940;
+        } else if (newY > 924) {
+            newY = 924;
         }
 
         player.setX(newX);
