@@ -12,6 +12,7 @@ public class EndScreen extends BaseScreen {
     private final SceneController sceneController;
     private final Texture background;
     private final BitmapFont font;
+    private Texture bottomTexture;
 
     public EndScreen(IO_Controller ioController, SceneController sceneController) {
         super(ioController);
@@ -24,6 +25,7 @@ public class EndScreen extends BaseScreen {
         // Load assets
         this.background = new Texture("menuBackground.png");
         this.font = new BitmapFont(); // Customize font as needed
+        this.bottomTexture = new Texture("tj/tj.png");
     }
 
     @Override
@@ -47,8 +49,11 @@ public class EndScreen extends BaseScreen {
     @Override
     protected void draw() {
         batch.draw(background, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
-        font.draw(batch, "Game Over", viewport.getWorldWidth() / 2 - 50, viewport.getWorldHeight() / 2);
+        font.draw(batch, "Game Over", viewport.getWorldWidth() / 2 - 50, viewport.getWorldHeight() / 2 + 30);
+        font.draw(batch,"You feel a heart attack coming! You lay down and fell asleep forever!",viewport.getWorldWidth() / 2 - 220,viewport.getWorldHeight() / 2);
         font.draw(batch, "Press ESC to Exit or R to Restart", viewport.getWorldWidth() / 2 - 100, viewport.getWorldHeight() / 2 - 30);
+        float x = (viewport.getWorldWidth() - bottomTexture.getWidth()) / 2;
+        batch.draw(bottomTexture, x, 0);
     }
 
     private void handleInput() {
@@ -65,5 +70,6 @@ public class EndScreen extends BaseScreen {
         super.dispose();
         background.dispose();
         font.dispose();
+        bottomTexture.dispose();
     }
 }
