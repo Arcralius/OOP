@@ -101,19 +101,9 @@ public class VictoryScreen extends BaseScreen {
 
     @Override
     protected void draw() {
-        String victoryText = "Victory!";
-        String pressText = "Press ESC to Exit or R to Restart";
-
-        glyphLayout.setText(font, victoryText);
-        float victoryX = viewport.getWorldWidth() / 2 - glyphLayout.width / 2;
-        float victoryY = viewport.getWorldHeight() / 2;
-
-        glyphLayout.setText(font, pressText);
-        float pressX = viewport.getWorldWidth() / 2 - glyphLayout.width / 2;
-        float pressY = victoryY - glyphLayout.height;
-
-        font.draw(batch, victoryText, victoryX, victoryY);
-        font.draw(batch, pressText, pressX, pressY);
+        batch.draw(backgroundTexture, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
+        font.draw(batch, "Victory!", viewport.getWorldWidth() / 2 - 50, viewport.getWorldHeight() / 2);
+        font.draw(batch, "Press ESC to Exit or R to Restart", viewport.getWorldWidth() / 2 - 100, viewport.getWorldHeight() / 2 - 30);
 
         for (FoodEntity fruit : fallingFruits) {
             batch.draw(fruit.getTextureObject(), fruit.getX(), fruit.getY(), fruit.getWidth(), fruit.getHeight());
