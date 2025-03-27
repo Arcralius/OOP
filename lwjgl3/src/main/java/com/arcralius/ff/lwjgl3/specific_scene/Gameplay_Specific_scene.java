@@ -82,11 +82,15 @@ public class Gameplay_Specific_scene extends GameplayScreen {
     }
 
     private void initialiseEnemies() {
-        String[] ids = { "enemy 1", "enemy 2", "enemy 3" };
+        String[] ids = { "enemy 1", "enemy 2", "enemy 3", "top left enemy 4", " top right enemy 5", "top enemy", "top enemy" };
         float[][] positions = {
             { 300f, 300f, 100f },
             { 200f, 100f, 200f },
-            { 300f, 200f, 300f }
+            { 300f, 200f, 300f },
+            { 600f, 700f, 300f },
+            { 200f, 700f, 300f },
+            { 600f, 900f, 300f },
+            { 200f, 900f, 300f }
         };
 
         for (int i = 0; i < ids.length; i++) {

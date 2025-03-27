@@ -49,11 +49,17 @@ public class EndScreen extends BaseScreen {
     @Override
     protected void draw() {
         batch.draw(background, 0, 0, viewport.getWorldWidth(), viewport.getWorldHeight());
-        font.draw(batch, "Game Over", viewport.getWorldWidth() / 2 - 50, viewport.getWorldHeight() / 2 + 30);
-        font.draw(batch,"You feel a heart attack coming! You lay down and fell asleep forever!",viewport.getWorldWidth() / 2 - 220,viewport.getWorldHeight() / 2);
-        font.draw(batch, "Press ESC to Exit or R to Restart", viewport.getWorldWidth() / 2 - 100, viewport.getWorldHeight() / 2 - 30);
-        float x = (viewport.getWorldWidth() - bottomTexture.getWidth()) / 2;
-        batch.draw(bottomTexture, x, 0);
+        font.draw(batch, "Game Over", viewport.getWorldWidth() / 2 - 50, viewport.getWorldHeight() / 2 + 160);
+        font.draw(batch,"You feel a heart attack coming! You lay down and fell asleep forever!",viewport.getWorldWidth() / 2 - 220,viewport.getWorldHeight() / 2 + 100);
+        font.draw(batch, "Press ESC to Exit or R to Restart", viewport.getWorldWidth() / 2 - 100, viewport.getWorldHeight() / 2 + 140);
+//        float x = (viewport.getWorldWidth() - bottomTexture.getWidth()) / 2;
+//        batch.draw(bottomTexture, x, 0);
+        float scale = 2f;
+        float newWidth = bottomTexture.getWidth() * scale;
+        float newHeight = bottomTexture.getHeight() * scale;
+
+        float x = (viewport.getWorldWidth() - newWidth) / 2;
+        batch.draw(bottomTexture, x, 0, newWidth, newHeight);
     }
 
     private void handleInput() {
